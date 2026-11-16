@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Типичные ошибки в учёте ТМЦ и способы их исправления</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .error-card {
+            background: var(--p-white);
+            border: 1px solid var(--color-border);
+            border-left: 5px solid #d32f2f;
+            padding: 25px 28px;
+            margin-bottom: 20px;
+        }
+        .error-symptom {
+            display: inline-block;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            padding: 4px 10px;
+            background: #d32f2f;
+            color: white;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .error-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        .error-cause {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .error-cause strong { color: var(--color-text); }
+        .error-solution h4 {
+            font-family: var(--font-text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 15px 0 8px 0;
+            color: var(--color-text);
+        }
+        .error-solution ol, .error-solution ul {
+            margin: 0 0 10px 0;
+            padding-left: 1.4em;
+        }
+        .error-solution li { margin-bottom: 6px; font-size: 0.92rem; }
+        .error-solution code {
+            font-family: 'DejaVu Sans Mono', monospace;
+            font-size: 0.85em;
+            background: var(--color-surface);
+            padding: 2px 6px;
+            border: 1px solid var(--color-border);
+        }
+        .severity {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+        .severity-high { background: #ffebee; color: #c62828; }
+        .severity-medium { background: #fff3e0; color: #e65100; }
+        .severity-low { background: #e8f5e9; color: #2e7d32; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="wordmark">КУРС<span>ТМЦ</span><i>1С:БУХГАЛТЕРИЯ 8.3</i></a>
+        <div class="header-nav"><a href="index.html">← В КАТАЛОГ</a></div>
+    </header>
+
+    <div class="course-wrap">
+
+        <h1>Типичные ошибки<br>и как их исправить</h1>
+
+        <div class="course-info">
+            <p><strong>Для чего:</strong> когда в 1С что-то «не сходится» — минус на складе, суммовая разница, зависшие остатки — не нужно паниковать. Найдите симптом в этом справочнике и действуйте по алгоритму.</p>
+            <p><strong>Источники:</strong> практика бухгалтеров, экспертные статьи (buh.mcfr.kz, 26-2.ru, infostart.ru, buhexpert8.ru), форумы buhonline.ru.</p>
+            <p><strong>Важно:</strong> прежде чем исправлять — выясните причину. Не «выравнивайте» минус blindly.</p>
+        </div>
+
+        <!-- Ошибка 1 -->
+        <div class="error-card">
+            <span class="error-symptom">Симптом</span>
+            <span class="severity severity-high">Высокий риск</span>
+            <div class="error-title">Отрицательный остаток по количеству на складе</div>
+            <div class="error-cause">
+                <strong>Причина:</strong> нарушение хронологии документов — списание проведено раньше поступления; пересортица по субконто (разные склады, номенклатурные группы); несвоевременный ввод поступления (кладовщик принёс накладную позже, чем был расход)[reference:0].
+            </div>
+            <div class="error-solution">
+                <h4>Что делать</h4>
+                <ol>
+                    <li><strong>Не исправляйте минус сразу.</strong> Сначала поговорите с кладовщиком и менеджером — выясните, какая операция привела к расхождению[reference:1].</li>
+                    <li>Откройте <strong>ОСВ по счёту 10</strong> с группировкой по номенклатуре, складам и МОЛ. Найдите позицию с минусом.</li>
+                    <li>Сформируйте <strong>карточку счёта</strong> по этой номенклатуре — проследите хронологию движения. Если списание стоит раньше поступления — это и есть причина[reference:2].</li>
+                    <li>Если поступление просто введено позже — <strong>перепроведите документы в правильной хронологии</strong> (сначала поступление, потом расход).</li>
+                    <li>Если причина — пересортица (списали не тот материал) — оформите <strong>зачёт пересортицы</strong> только при полном совпадении наименования, количества и цены. Иначе — это разные ошибки[reference:4].</li>
+                    <li>Если документ поступления отсутствует — запросите его у поставщика или оформите <strong>«Оприходование товаров»</strong> только после подтверждения фактического наличия.</li>
+                </ol>
+                <p><strong>Чего делать нельзя:</strong> вводить фиктивное поступление «задним числом», чтобы «закрыть» минус. Это искажает отчётность.</p>
+            </div>
+        </div>
+
+        <!-- Ошибка 2 -->
+        <div class="error-card">
+            <span class="error-symptom">Симптом</span>
+            <span class="severity severity-medium">Средний риск</span>
+            <div class="error-title">Минус по сумме при плюсе по количеству (суммовая разница)</div>
+            <div class="error-cause">
+                <strong>Причина:</strong> не выполнена регламентная операция <strong>«Расчёт себестоимости»</strong> в составе закрытия месяца. В течение месяца списание идёт по «скользящей» средней, финальный перерасчёт — только при закрытии[reference:5]. Также — ручные проводки по счетам запасов, которые не совпадают с регистрами 1С[reference:6].
+            </div>
+            <div class="error-solution">
+                <h4>Что делать</h4>
+                <ol>
+                    <li>Проверьте, выполнено ли <strong>«Закрытие месяца»</strong> (Операции → Закрытие месяца). Если нет — выполните регламентные операции: распределение косвенных, расчёт себестоимости.</li>
+                    <li>Сформируйте <strong>ОСВ по счёту 10</strong> — если минус по сумме исчез после закрытия, значит, причина была в отсутствии регламентной операции.</li>
+                    <li>Если минус остался — проверьте, нет ли <strong>ручных «Операций»</strong> по счетам 10, 20, 43. Они могли создать разрыв между бухгалтерскими проводками и регистрами себестоимости[reference:7].</li>
+                    <li>Если ручная операция ошибочна — сделайте <strong>сторно</strong> в текущем периоде (если прошлый закрыт) и перепроведите документы заново[reference:8].</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Ошибка 3 -->
+        <div class="error-card">
+            <span class="error-symptom">Симптом</span>
+            <span class="severity severity-medium">Средний риск</span>
+            <div class="error-title">Отрицательные остатки в регистре затрат по давальческому сырью</div>
+            <div class="error-cause">
+                <strong>Причина:</strong> при работе с давальческой схемой в 1С неправильно настроены виды запасов или документы движения резервов. Также — если давальческое сырьё указано не на вкладке «Материалы заказчика», а на обычной вкладке материалов[reference:9].
+            </div>
+            <div class="error-solution">
+                <h4>Что делать</h4>
+                <ol>
+                    <li>Проверьте настройки: <strong>Главное → Функциональность → Производство</strong> — включена ли галочка «Давальческое сырьё».</li>
+                    <li>Убедитесь, что в документе «Поступление» давальческое сырьё выбрано на вкладке <strong>«Материалы заказчика»</strong>, а не на обычной вкладке「2†L25-L26】.</li>
+                    <li>Проверьте счета: у переработчика — <strong>003.01</strong> (на складе) и <strong>003.02</strong> (в производстве). Передача оформляется проводкой <code>Дт 003.02 — Кт 003.01</code>[reference:10].</li>
+                    <li>Сформируйте <strong>ОСВ по счёту 003</strong> — если есть минус, найдите документ, который списал больше, чем было.</li>
+                    <li>Если ошибка в резервах — проверьте документы <strong>«Изменение резервов»</strong> (в некоторых версиях — «Корректировка резервов»).</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Ошибка 4 -->
+        <div class="error-card">
+            <span class="error-symptom">Симптом</span>
+            <span class="severity severity-low">Низкий риск</span>
+            <div class="error-title">Спецодежда «зависла» на счёте 10.10 после выдачи</div>
+            <div class="error-cause">
+                <strong>Причина:</strong> не оформлен документ <strong>«Передача материалов в эксплуатацию»</strong> или не включена функциональность «Спецодежда». Либо выдача оформлена как «Расход материалов», а не как передача в эксплуатацию.
+            </div>
+            <div class="error-solution">
+                <h4>Что делать</h4>
+                <ol>
+                    <li>Проверьте: <strong>Главное → Настройки → Функциональность → Спецодежда</strong> — галочка должна быть включена.</li>
+                    <li>Если спецодежда была списана как обычный материал — <strong>отсторнируйте</strong> документ «Расход материалов» и оформите <strong>«Передачу материалов в эксплуатацию»</strong>.</li>
+                    <li>Проверьте счета: при выдаче должно быть <code>Дт 10.11.1 — Кт 10.10</code>.</li>
+                    <li>Если срок службы > 12 месяцев — убедитесь, что в закрытии месяца выполняется регламентная операция <strong>«Погашение стоимости спецодежды»</strong>.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Ошибка 5 -->
+        <div class="error-card">
+            <span class="error-symptom">Симптом</span>
+            <span class="severity severity-medium">Средний риск</span>
+            <div class="error-title">Счёт 20 «не закрывается» после закрытия месяца (висит сальдо)</div>
+            <div class="error-cause">
+                <strong>Причина:</strong> сальдо на счёте 20 после закрытия — это <strong>НЗП</strong> (незавершённое производство). Это не всегда ошибка. Но если НЗП «зависло» там, где его быть не должно — возможно, не выполнен выпуск продукции или не списаны материалы.
+            </div>
+            <div class="error-solution">
+                <h4>Что делать</h4>
+                <ol>
+                    <li>Проверьте <strong>Анализ счёта 20</strong> — какие затраты остались в дебете.</li>
+                    <li>Если это материалы, которые должны были уйти в производство — проверьте, оформлен ли документ <strong>«Расход материалов»</strong> или <strong>«Отчёт производства за смену»</strong> с флажком «Списать материалы».</li>
+                    <li>Если выпуск продукции был, но НЗП «не тот» — проверьте <strong>спецификацию</strong>: возможно, она не настроена, и материалы не списались автоматически.</li>
+                    <li>Если НЗП реальное (незавершёнка) — проверьте, что его оценка соответствует учётной политике.</li>
+                </ol>
+                <p><strong>Чего делать нельзя:</strong> «закрывать» счёт 20 ручной операцией, если это не НЗП. Это искажает себестоимость.</p>
+            </div>
+        </div>
+
+        <!-- Ошибка 6 -->
+        <div class="error-card">
+            <span class="error-symptom">Симптом</span>
+            <span class="severity severity-low">Низкий риск</span>
+            <div class="error-title">Пересортица: излишек одного материала и недостача другого</div>
+            <div class="error-cause">
+                <strong>Причина:</strong> при списании или приёмке перепутали номенклатуру (например, «Сталь 2 мм» и «Сталь 3 мм»), или провели документы по разным складам/номенклатурным группам[reference:11].
+            </div>
+            <div class="error-solution">
+                <h4>Что делать</h4>
+                <ol>
+                    <li>Проверьте <strong>ОСВ по счёту 10</strong> с аналитикой по номенклатуре — найдите пару «излишек + недостача» с одинаковой суммой.</li>
+                    <li><strong>Зачёт пересортицы</strong> возможен только при одновременном соблюдении: одно и то же наименование, одинаковое количество, одинаковый проверяемый период, одно и то же МОЛ[reference:12].</li>
+                    <li>Если условия не совпадают — это <strong>не пересортица</strong>, а две отдельные ошибки. Недостача оформляется через инвентаризацию (счёт 94), излишек — через оприходование (счёт 91.01).</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="self-check">
+            <strong>Главное правило:</strong> не исправляйте минус, пока не поймёте, какая хозяйственная операция его создала. Разговор с кладовщиком и менеджером часто экономит часы работы с базой.
+        </div>
+
+        <footer class="footer">
+            <div><strong>КУРС ТМЦ</strong> · типичные ошибки</div>
+            <div><a href="index.html">Вернуться в каталог</a></div>
+        </footer>
+    </div>
+</body>
+</html>
