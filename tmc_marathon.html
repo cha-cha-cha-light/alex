@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Марафон: запомни всё по учёту ТМЦ</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ============================================
+           СТАРТОВЫЙ ЭКРАН
+           ============================================ */
+        .hero-marathon {
+            background: var(--color-text);
+            color: var(--p-paper);
+            padding: 40px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-marathon::before {
+            content: "МАРАФОН";
+            position: absolute;
+            right: -20px;
+            bottom: -40px;
+            font-family: var(--font-display);
+            font-size: 10rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.03);
+            letter-spacing: -0.05em;
+            pointer-events: none;
+            line-height: 1;
+        }
+        .hero-marathon h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 15px;
+            color: var(--p-paper);
+            position: relative;
+            z-index: 1;
+        }
+        .hero-marathon h1 em {
+            color: var(--color-accent);
+            font-style: normal;
+        }
+        .hero-marathon p {
+            color: #d4d2c9;
+            max-width: 620px;
+            font-size: 1rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .marathon-stats-bar {
+            display: flex;
+            gap: 0;
+            margin-bottom: 30px;
+            border: 1px solid var(--color-border);
+            background: var(--p-white);
+        }
+        .stat-block {
+            flex: 1;
+            padding: 20px 25px;
+            text-align: center;
+            border-right: 1px solid var(--color-border);
+        }
+        .stat-block:last-child { border-right: none; }
+        .stat-block .stat-num {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            display: block;
+            color: var(--color-text);
+        }
+        .stat-block .stat-lbl {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--color-text-muted);
+            margin-top: 8px;
+            display: block;
+        }
+        .stat-block.warning .stat-num { color: #d32f2f; }
+        .stat-block.success .stat-num { color: #2e7d32; }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            margin: 40px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--color-text);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .section-title .section-hint {
+            font-family: var(--font-text);
+            font-size: 0.82rem;
+            font-weight: 400;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .mode-card {
+            background: var(--p-white);
+            border: 2px solid var(--color-border-strong);
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        .mode-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(241,74,36,0.08), transparent);
+            transition: left 0.5s;
+        }
+        .mode-card:hover:not(.disabled) {
+            border-color: var(--color-text);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-print);
+        }
+        .mode-card:hover:not(.disabled)::after { left: 100%; }
+        .mode-card .mode-icon {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            display: block;
+            line-height: 1;
+        }
+        .mode-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+            line-height: 1.2;
+        }
+        .mode-card p {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin: 0 0 14px 0;
+            line-height: 1.5;
+        }
+        .mode-card .mode-count {
+            display: inline-block;
+            font-family: 'DejaVu Sans Mono', monospace;
+            font-size: 0.78rem;
+            padding: 4px 10px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .mode-card .mode-count.highlight {
+            background: var(--color-accent);
+            color: var(--color-text);
+        }
+        .mode-card .mode-count.danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .mode-card.disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .mode-card.featured {
+            border-color: var(--color-accent);
+            border-width: 3px;
+        }
+        .mode-card.featured::before {
+            content: "РЕКОМЕНДУЕМ";
+            position: absolute;
+            top: 15px;
+            right: -35px;
+            background: var(--color-accent);
+            color: var(--color-text);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 4px 40px;
+            transform: rotate(45deg);
+            z-index: 1;
+        }
+
+        /* Категории */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .cat-card {
+            background: var(--p-white);
+            border: 1px solid var(--color-border);
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .cat-card:hover {
+            border-color: var(--color-accent);
+            background: var(--p-paper);
+        }
+        .cat-card .cat-name {
+            font-weight: 700;
+            font-size: 0.92rem;
+            margin-bottom: 8px;
+            display: block;
+            line-height: 1.3;
+        }
+        .cat-card .cat-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+            color: var(--color-text-muted);
+            font-family: 'DejaVu Sans Mono', monospace;
+        }
+        .cat-card .cat-bar {
+            margin-top: 10px;
+            height: 4px;
+            background: var(--color-surface);
+            overflow: hidden;
+        }
+        .cat-card .cat-bar-fill {
+            height: 100%;
+            background: #2e7d32;
+            transition: width 0.4s;
+        }
+        .cat-card .cat-wrong-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #d32f2f;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* Последний результат */
+        .last-result-panel {
+            background: var(--p-white);
+            border: 1px solid var(--color-border);
+            border-left: 5px solid var(--color-accent);
+            padding: 20px 25px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .last-result-info { flex: 1; min-width: 200px; }
+        .last-result-info .lr-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--color-text-muted);
+            margin-bottom: 6px;
+        }
+        .last-result-info .lr-value {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .last-result-info .lr-meta {
+            font-size: 0.82rem;
+            color: var(--color-text-muted);
+            margin-top: 4px;
+        }
+        .btn-link {
+            background: transparent;
+            border: 1px solid var(--color-border-strong);
+            color: var(--color-text);
+            padding: 8px 16px;
+            font-family: var(--font-text);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-link:hover {
+            background: var(--color-text);
+            color: var(--p-paper);
+        }
+
+        /* ============================================
+           ЭКРАН МАРАФОНА
+           ============================================ */
+        .quiz-topbar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--color-border-strong);
+            color: var(--color-text);
+            padding: 8px 15px;
+            font-family: var(--font-text);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .back-btn:hover {
+            background: var(--color-text);
+            color: var(--p-paper);
+        }
+
+        .progress-section {
+            flex: 1;
+            min-width: 200px;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            font-family: 'DejaVu Sans Mono', monospace;
+            margin-bottom: 6px;
+        }
+        .progress-info .prog-counter { font-weight: 700; }
+        .progress-track {
+            height: 8px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--color-accent);
+            transition: width 0.35s ease;
+        }
+
+        .scoreboard {
+            display: flex;
+            gap: 10px;
+        }
+        .score-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--p-white);
+            border: 1px solid var(--color-border);
+            font-family: 'DejaVu Sans Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .score-chip.correct { color: #2e7d32; border-color: #a5d6a7; }
+        .score-chip.wrong { color: #c62828; border-color: #ef9a9a; }
+        .score-chip .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .question-card {
+            background: var(--p-white);
+            border: 1px solid var(--color-border);
+            padding: 32px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-print);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .category-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            padding: 5px 12px;
+            background: var(--color-text);
+            color: var(--p-paper);
+            text-transform: uppercase;
+        }
+        .question-number {
+            font-family: 'DejaVu Sans Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+        .question-text {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 25px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            background: var(--p-white);
+            border: 2px solid var(--color-border);
+            padding: 15px 20px;
+            font-family: var(--font-text);
+            font-size: 0.98rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.18s;
+            color: var(--color-text);
+            line-height: 1.4;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            position: relative;
+        }
+        .option-btn:not(:disabled):hover {
+            border-color: var(--color-text);
+            background: var(--color-surface);
+            transform: translateX(3px);
+        }
+        .option-btn:disabled { cursor: default; }
+        .option-btn .opt-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            flex-shrink: 0;
+            background: var(--color-surface);
+            font-weight: 700;
+            font-size: 0.85rem;
+            font-family: 'DejaVu Sans Mono', monospace;
+            color: var(--color-text);
+            transition: all 0.2s;
+        }
+        .option-btn .opt-text { flex: 1; padding-top: 3px; }
+        .option-btn.correct {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            color: #1b5e20;
+            font-weight: 600;
+        }
+        .option-btn.correct .opt-label {
+            background: #4caf50;
+            color: white;
+        }
+        .option-btn.incorrect {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #b71c1c;
+        }
+        .option-btn.incorrect .opt-label {
+            background: #f44336;
+            color: white;
+        }
+        .option-btn.correct::after {
+            content: "✓";
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2e7d32;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .option-btn.incorrect::after {
+            content: "✕";
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #c62828;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .explanation {
+            background: var(--color-surface);
+            border-left: 4px solid var(--color-accent);
+            padding: 18px 22px;
+            margin-top: 22px;
+            font-size: 0.92rem;
+            line-height: 1.55;
+            display: none;
+            animation: slideIn 0.25s ease;
+        }
+        .explanation.show { display: block; }
+        .explanation.correct { border-left-color: #4caf50; }
+        .explanation.incorrect { border-left-color: #f44336; }
+        .explanation strong { display: block; margin-bottom: 6px; font-size: 0.95rem; }
+        .explanation a {
+            display: inline-block;
+            margin-top: 12px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid;
+            padding-bottom: 2px;
+        }
+
+        .next-btn {
+            background: var(--color-text);
+            color: var(--p-paper);
+            border: none;
+            padding: 15px 32px;
+            font-family: var(--font-text);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 22px;
+            display: none;
+            transition: all 0.2s;
+            align-items: center;
+            gap: 10px;
+        }
+        .next-btn.show { display: inline-flex; }
+        .next-btn:hover {
+            background: var(--color-accent);
+            color: var(--color-text);
+            transform: translateX(3px);
+        }
+        .next-btn .kbd {
+            background: rgba(255,255,255,0.15);
+            padding: 2px 7px;
+            font-family: 'DejaVu Sans Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .kbd-hint {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            font-size: 0.78rem;
+            color: var(--color-text-muted);
+            font-family: 'DejaVu Sans Mono', monospace;
+        }
+        .kbd-hint .kbd {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: 2px 7px;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-right: 5px;
+        }
+
+        /* ============================================
+           ЭКРАН РЕЗУЛЬТАТОВ
+           ============================================ */
+        .result-card {
+            background: var(--color-text);
+            color: var(--p-paper);
+            padding: 50px 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .result-card.perfect {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+        }
+        .result-card.perfect::before {
+            content: "🎉";
+            position: absolute;
+            font-size: 15rem;
+            opacity: 0.08;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .result-card h2 {
+            color: var(--p-paper);
+            border-bottom: 2px solid var(--color-accent);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+        }
+        .result-card.perfect h2 { border-bottom-color: rgba(255,255,255,0.5); }
+        .big-score {
+            font-family: var(--font-display);
+            font-size: clamp(3.5rem, 10vw, 6rem);
+            font-weight: 700;
+            color: var(--color-accent);
+            line-height: 1;
+            margin: 15px 0 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .result-card.perfect .big-score { color: #fff; }
+        .big-percent {
+            font-size: 1.2rem;
+            color: #d4d2c9;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        .result-card.perfect .big-percent { color: rgba(255,255,255,0.85); }
+        .result-verdict {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        .result-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 25px 0 30px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+        .breakdown-item {
+            text-align: center;
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.08);
+            min-width: 110px;
+        }
+        .result-card.perfect .breakdown-item { background: rgba(255,255,255,0.15); }
+        .breakdown-item .num {
+            font-family: 'DejaVu Sans Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: block;
+            line-height: 1;
+        }
+        .breakdown-item .lbl {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #d4d2c9;
+            margin-top: 6px;
+        }
+        .result-card.perfect .breakdown-item .lbl { color: rgba(255,255,255,0.85); }
+        .breakdown-item.ok .num { color: #66bb6a; }
+        .breakdown-item.no .num { color: #ef5350; }
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        .result-actions button {
+            padding: 13px 28px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: 2px solid var(--color-accent);
+            background: var(--color-accent);
+            color: var(--color-text);
+            font-family: var(--font-text);
+            transition: all 0.2s;
+        }
+        .result-actions button:hover {
+            background: transparent;
+            color: var(--color-accent);
+        }
+        .result-actions button.secondary {
+            background: transparent;
+            color: var(--p-paper);
+            border-color: var(--p-paper);
+        }
+        .result-actions button.secondary:hover {
+            background: var(--p-paper);
+            color: var(--color-text);
+        }
+        .result-card.perfect .result-actions button.secondary {
+            color: #fff;
+            border-color: #fff;
+        }
+        .result-card.perfect .result-actions button.secondary:hover {
+            background: #fff;
+            color: #2e7d32;
+        }
+        .result-card.perfect .result-actions button {
+            border-color: var(--color-accent);
+            background: var(--color-accent);
+            color: var(--color-text);
+        }
+        .result-card.perfect .result-actions button:hover {
+            background: #fff;
+            border-color: #fff;
+            color: #2e7d32;
+        }
+
+        .wrong-list-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--color-text);
+        }
+        .wrong-item {
+            background: var(--p-white);
+            border-left: 4px solid #f44336;
+            padding: 18px 22px;
+            margin-bottom: 12px;
+            font-size: 0.92rem;
+        }
+        .wrong-item .wq {
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            font-size: 1rem;
+        }
+        .wrong-item .wa {
+            color: #2e7d32;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            background: #e8f5e9;
+            margin-bottom: 8px;
+        }
+        .wrong-item .wexp {
+            color: var(--color-text-muted);
+            font-size: 0.86rem;
+            line-height: 1.5;
+            padding-top: 8px;
+            border-top: 1px dashed var(--color-border);
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 700px) {
+            .hero-marathon { padding: 25px 20px; }
+            .stat-block { padding: 15px; }
+            .stat-block .stat-num { font-size: 1.5rem; }
+            .question-card { padding: 22px 20px; }
+            .option-btn { padding: 12px 15px; font-size: 0.92rem; }
+            .option-btn .opt-label { width: 22px; height: 22px; font-size: 0.78rem; }
+            .question-text { font-size: 1.1rem; }
+            .result-card { padding: 35px 20px; }
+            .quiz-topbar { gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="wordmark">КУРС<span>ТМЦ</span><i>1С:БУХГАЛТЕРИЯ 8.3</i></a>
+        <div class="header-nav"><a href="index.html">← В КАТАЛОГ</a></div>
+    </header>
+
+    <div class="course-wrap">
+
+        <!-- ==================== СТАРТОВЫЙ ЭКРАН ==================== -->
+        <div id="startScreen">
+            <div class="hero-marathon">
+                <h1>Марафон:<br>запомни <em>всё</em></h1>
+                <p>70 вопросов по учёту ТМЦ — как тренажёр по ПДД. Проходите подряд, ошибаетесь, читаете пояснения, отрабатываете ошибки. Пока не запомните каждую проводку.</p>
+            </div>
+
+            <div class="marathon-stats-bar">
+                <div class="stat-block">
+                    <span class="stat-num" id="totalStat">70</span>
+                    <span class="stat-lbl">Всего вопросов</span>
+                </div>
+                <div class="stat-block success">
+                    <span class="stat-num" id="masteredStat">0</span>
+                    <span class="stat-lbl">Освоено</span>
+                </div>
+                <div class="stat-block warning">
+                    <span class="stat-num" id="wrongStat">0</span>
+                    <span class="stat-lbl">В ошибках</span>
+                </div>
+                <div class="stat-block">
+                    <span class="stat-num" id="attemptsStat">0</span>
+                    <span class="stat-lbl">Марафонов</span>
+                </div>
+            </div>
+
+            <h2 class="section-title">Режимы <span class="section-hint">выберите, как проходить</span></h2>
+            <div class="mode-grid">
+                <div class="mode-card featured" onclick="startMarathon('all')">
+                    <span class="mode-icon">🏁</span>
+                    <h3>Полный марафон</h3>
+                    <p>Все 70 вопросов вперемешку. Оптимально для первого прохождения.</p>
+                    <span class="mode-count">70 вопросов</span>
+                </div>
+                <div class="mode-card" id="wrongModeCard" onclick="startMarathon('wrong')">
+                    <span class="mode-icon">🎯</span>
+                    <h3>Работа над ошибками</h3>
+                    <p>Только вопросы, на которые вы отвечали неверно. Убирается, когда ответите правильно.</p>
+                    <span class="mode-count danger" id="wrongCardCount">0 вопросов</span>
+                </div>
+                <div class="mode-card" onclick="startMarathon('random20')">
+                    <span class="mode-icon">⚡</span>
+                    <h3>Случайные 20</h3>
+                    <p>Быстрая проверка на 20 вопросах из всех категорий.</p>
+                    <span class="mode-count">20 вопросов</span>
+                </div>
+                <div class="mode-card" onclick="startMarathon('random10')">
+                    <span class="mode-icon">🚀</span>
+                    <h3>Разминка</h3>
+                    <p>10 случайных вопросов — если совсем мало времени.</p>
+                    <span class="mode-count">10 вопросов</span>
+                </div>
+            </div>
+
+            <h2 class="section-title">По категориям <span class="section-hint">отработать одну тему</span></h2>
+            <div class="categories-grid" id="categoriesGrid"></div>
+
+            <div class="last-result-panel" id="lastResultPanel" style="display: none;">
+                <div class="last-result-info">
+                    <div class="lr-label">Последний результат</div>
+                    <div class="lr-value" id="lrValue">—</div>
+                    <div class="lr-meta" id="lrMeta">—</div>
+                </div>
+                <button class="btn-link" onclick="clearWrong()">Сбросить прогресс</button>
+            </div>
+        </div>
+
+        <!-- ==================== ЭКРАН МАРАФОНА ==================== -->
+        <div id="quizScreen" style="display: none;">
+            <div class="quiz-topbar">
+                <button class="back-btn" onclick="goHome()">← Выйти</button>
+                <div class="progress-section">
+                    <div class="progress-info">
+                        <span class="prog-counter" id="counter">1 / 70</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="scoreboard">
+                    <div class="score-chip correct"><span class="dot"></span><span id="scoreCorrect">0</span></div>
+                    <div class="score-chip wrong"><span class="dot"></span><span id="scoreWrong">0</span></div>
+                </div>
+            </div>
+
+            <div class="question-card" id="questionCard">
+                <div class="question-meta">
+                    <span class="category-badge" id="category">—</span>
+                    <span class="question-number" id="questionNumber">Вопрос 1</span>
+                </div>
+                <div class="question-text" id="questionText">Загрузка...</div>
+                <div class="options" id="options"></div>
+                <div class="explanation" id="explanation"></div>
+                <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
+                    <span>Следующий вопрос</span>
+                    <span class="kbd">Enter</span>
+                    <span>→</span>
+                </button>
+            </div>
+
+            <div class="kbd-hint" id="kbdHint">
+                <span><span class="kbd">1</span><span class="kbd">2</span><span class="kbd">3</span><span class="kbd">4</span> — ответ</span>
+                <span><span class="kbd">Enter</span> — следующий вопрос</span>
+            </div>
+        </div>
+
+        <!-- ==================== ЭКРАН РЕЗУЛЬТАТОВ ==================== -->
+        <div id="endScreen" style="display: none;">
+            <div class="result-card" id="resultCard">
+                <h2 id="resultTitle">Марафон пройден</h2>
+                <div class="big-score" id="finalScore">0 / 0</div>
+                <div class="big-percent" id="finalPercent">0%</div>
+                <div class="result-verdict" id="resultVerdict"></div>
+                <div class="result-breakdown">
+                    <div class="breakdown-item ok">
+                        <span class="num" id="finalCorrect">0</span>
+                        <span class="lbl">Верно</span>
+                    </div>
+                    <div class="breakdown-item no">
+                        <span class="num" id="finalWrong">0</span>
+                        <span class="lbl">Ошибок</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="num" id="finalTime">0:00</span>
+                        <span class="lbl">Время</span>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button onclick="startMarathon('wrong')" id="retryWrongBtn" style="display: none;">Повторить ошибки</button>
+                    <button class="secondary" onclick="startMarathon('all')">Новый марафон</button>
+                    <button class="secondary" onclick="goHome()">К режимам</button>
+                </div>
+            </div>
+
+            <div id="wrongSection" style="display: none;">
+                <h2 class="wrong-list-title">Что стоит запомнить</h2>
+                <div id="wrongList"></div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div><strong>КУРС ТМЦ</strong> · марафон</div>
+            <div><a href="index.html">Вернуться в каталог</a></div>
+        </footer>
+    </div>
+
+<script>
+// ============================================================
+// БАЗА ВОПРОСОВ — 70 штук
+// ============================================================
+const questions = [
+    // ФСБУ 5/2019 (8)
+    {id:1, cat:"ФСБУ 5/2019", q:"Какой стандарт регулирует учёт запасов в России?", o:["ПБУ 5/01","ФСБУ 5/2019 «Запасы»","ФСБУ 25/2018","МСФО (IAS) 2"], c:1, e:"ФСБУ 5/2019 «Запасы» утверждён приказом Минфина № 180н от 15.11.2019.", l:"tmc_research.html#module1"},
+    {id:2, cat:"ФСБУ 5/2019", q:"С какого года обязателен ФСБУ 5/2019?", o:["С 2019","С 2020","С 2021","С 2022"], c:2, e:"ФСБУ 5/2019 обязателен с 2021 года (приказ Минфина № 180н от 15.11.2019).", l:"tmc_research.html#module1"},
+    {id:3, cat:"ФСБУ 5/2019", q:"Какой стандарт заменил ФСБУ 5/2019?", o:["ПБУ 5/01 «Учёт МПЗ»","ПБУ 6/01","ПБУ 10/99","ПБУ 1/2008"], c:0, e:"ФСБУ 5/2019 заменил ПБУ 5/01 «Учёт материально-производственных запасов».", l:"tmc_research.html#module1"},
+    {id:4, cat:"ФСБУ 5/2019", q:"Входит ли возмещаемый НДС в первоначальную стоимость материалов?", o:["Да, всегда","Нет, возмещаемые налоги не включаются","Только для импортных","Зависит от учётной политики"], c:1, e:"Согласно п. 12 ФСБУ 5/2019, возмещаемые налоги (в том числе НДС) не включаются в фактическую себестоимость запасов.", l:"tmc_research.html#module1"},
+    {id:5, cat:"ФСБУ 5/2019", q:"Что такое «лимит признания» в контексте ФСБУ 5/2019?", o:["Максимальная стоимость запасов на складе","Лимит для отнесения актива к основным средствам","Минимальная партия закупки","Срок хранения запасов"], c:1, e:"Сам ФСБУ 5/2019 не устанавливает лимита для запасов. Организация устанавливает лимит стоимости для отнесения активов к ОС (счёт 01).", l:"tmc_research.html#module1"},
+    {id:6, cat:"ФСБУ 5/2019", q:"Какой срок использования определяет отнесение актива к запасам?", o:["До 6 месяцев","До 12 месяцев или обычный операционный цикл","До 3 лет","Не имеет значения"], c:1, e:"Запасы — активы, потребляемые или продаваемые в течение 12 месяцев или обычного операционного цикла, если он дольше 12 месяцев.", l:"tmc_research.html#module1"},
+    {id:7, cat:"ФСБУ 5/2019", q:"Включаются ли ТЗР в фактическую себестоимость запасов?", o:["Нет, это прочие расходы","Да, включаются (п. 11 ФСБУ 5/2019)","Только для импортных материалов","Только если прописано в договоре"], c:1, e:"Транспортно-заготовительные расходы включаются в фактическую себестоимость запасов согласно п. 11 ФСБУ 5/2019.", l:"tmc_research.html#module4"},
+    {id:8, cat:"ФСБУ 5/2019", q:"Какой метод оценки запасов при выбытии НЕ применяется в российском бухучёте?", o:["По средней себестоимости","По себестоимости каждой единицы","ФИФО","ЛИФО"], c:3, e:"Метод ЛИФО не применяется в российском бухгалтерском учёте. Разрешены: по средней, по себестоимости единицы и ФИФО.", l:"tmc_deepseek.html#module1"},
+
+    // Проводки (12)
+    {id:9, cat:"Проводки", q:"Поступление материалов от поставщика", o:["Дт 10.01 — Кт 60.01","Дт 20.01 — Кт 10.01","Дт 43 — Кт 20.01","Дт 94 — Кт 10.01"], c:0, e:"Оприходование материалов на основании накладной поставщика.", l:"tmc_deepseek.html#module3"},
+    {id:10, cat:"Проводки", q:"Выделен входной НДС по поступлению", o:["Дт 90.03 — Кт 60.01","Дт 19.03 — Кт 60.01","Дт 68.02 — Кт 19.03","Дт 10.01 — Кт 19.03"], c:1, e:"НДС, предъявленный поставщиком, отражается на счёте 19.", l:"tmc_deepseek.html#module3"},
+    {id:11, cat:"Проводки", q:"Выдача материалов в цех на выпуск продукции", o:["Дт 10.01 — Кт 20.01","Дт 20.01 — Кт 10.01","Дт 25 — Кт 10.01","Дт 43 — Кт 10.01"], c:1, e:"Списание материалов в основное производство.", l:"tmc_deepseek.html#module4"},
+    {id:12, cat:"Проводки", q:"Выдача материалов на общецеховые нужды", o:["Дт 20.01 — Кт 10.01","Дт 25 — Кт 10.01","Дт 26 — Кт 10.01","Дт 44 — Кт 10.01"], c:1, e:"Общепроизводственные расходы — счёт 25.", l:"tmc_deepseek.html#module4"},
+    {id:13, cat:"Проводки", q:"Выдача материалов на управленческие нужды", o:["Дт 20.01 — Кт 10.01","Дт 25 — Кт 10.01","Дт 26 — Кт 10.01","Дт 44 — Кт 10.01"], c:2, e:"Общехозяйственные расходы — счёт 26.", l:"tmc_deepseek.html#module4"},
+    {id:14, cat:"Проводки", q:"Выпуск готовой продукции из производства", o:["Дт 20.01 — Кт 43","Дт 43 — Кт 20.01","Дт 43 — Кт 10.01","Дт 90.02 — Кт 43"], c:1, e:"Оприходование готовой продукции на склад.", l:"tmc_deepseek.html#module4"},
+    {id:15, cat:"Проводки", q:"Возврат неиспользованных материалов из цеха на склад", o:["Дт 10.01 — Кт 20.01","Дт 20.01 — Кт 10.01","Дт 91.01 — Кт 10.01","Дт 94 — Кт 10.01"], c:0, e:"Возврат материалов уменьшает затраты производства и восстанавливает запас на складе.", l:"tmc_deepseek.html#module4"},
+    {id:16, cat:"Проводки", q:"Излишки материалов, выявленные при инвентаризации", o:["Дт 10.01 — Кт 91.01","Дт 94 — Кт 10.01","Дт 10.01 — Кт 60.01","Дт 91.02 — Кт 10.01"], c:0, e:"Излишки — прочие доходы (счёт 91.01).", l:"tmc_deepseek.html#module5"},
+    {id:17, cat:"Проводки", q:"Недостача материалов (до решения руководителя)", o:["Дт 10.01 — Кт 94","Дт 94 — Кт 10.01","Дт 91.02 — Кт 10.01","Дт 73 — Кт 10.01"], c:1, e:"Недостача сначала отражается на счёте 94 «Недостачи и потери от порчи ценностей».", l:"tmc_deepseek.html#module5"},
+    {id:18, cat:"Проводки", q:"Недостача отнесена на виновное лицо", o:["Дт 94 — Кт 73.02","Дт 73.02 — Кт 94","Дт 70 — Кт 94","Дт 91.02 — Кт 73.02"], c:1, e:"После установления виновника недостача переносится на счёт 73.02 «Расчёты по возмещению материального ущерба».", l:"tmc_deepseek.html#module5"},
+    {id:19, cat:"Проводки", q:"Давальческое сырьё у переработчика (принято в переработку)", o:["Дт 10.01 — Кт 60","Дт 003 — (забалансовая запись)","Дт 03 — Кт 60","Дт 10.07 — Кт 10.01"], c:1, e:"У переработчика давальческое сырьё учитывается на забалансовом счёте 003 по цене договора.", l:"tmc_research.html#module6"},
+    {id:20, cat:"Проводки", q:"Передача материалов в переработку у давальца", o:["Дт 003 — Кт 10.01","Дт 10.07 — Кт 10.01","Дт 20.01 — Кт 10.01","Дт 03 — Кт 10.01"], c:1, e:"У давальца материалы, переданные в переработку на сторону, учитываются на счёте 10.07.", l:"tmc_research.html#module6"},
+
+    // Счета (10)
+    {id:21, cat:"Счета", q:"На каком счёте учитываются материалы?", o:["01","10","41","43"], c:1, e:"Счёт 10 «Материалы» — основной счёт для учёта сырья и материалов.", l:"tmc_accounts.html"},
+    {id:22, cat:"Счета", q:"На каком субсчёте учитывается топливо (ГСМ)?", o:["10.01","10.03","10.04","10.06"], c:1, e:"Счёт 10.03 «Топливо» — для бензина, дизеля и других ГСМ.", l:"tmc_accounts.html"},
+    {id:23, cat:"Счета", q:"На каком счёте учитывается спецодежда на складе?", o:["10.09","10.10","10.11.1","10.11"], c:1, e:"Счёт 10.10 «Специальная оснастка и специальная одежда на складе».", l:"tmc_accounts.html"},
+    {id:24, cat:"Счета", q:"На каком счёте учитывается спецодежда, выданная сотрудникам?", o:["10.10","10.11.1","10.11.2","20.01"], c:1, e:"Счёт 10.11.1 «Специальная одежда в эксплуатации».", l:"tmc_accounts.html"},
+    {id:25, cat:"Счета", q:"На каком счёте учитывается готовая продукция?", o:["41","43","10.06","20"], c:1, e:"Счёт 43 «Готовая продукция» — для продукции собственного производства.", l:"tmc_accounts.html"},
+    {id:26, cat:"Счета", q:"На каком счёте собираются затраты основного производства?", o:["20","23","25","26"], c:0, e:"Счёт 20 «Основное производство» — основной счёт для затрат на выпуск продукции.", l:"tmc_accounts.html"},
+    {id:27, cat:"Счета", q:"На каком счёте учитываются общепроизводственные расходы?", o:["20","23","25","26"], c:2, e:"Счёт 25 «Общепроизводственные расходы» — расходы на содержание цехов.", l:"tmc_accounts.html"},
+    {id:28, cat:"Счета", q:"На каком счёте учитываются общехозяйственные расходы?", o:["20","23","25","26"], c:3, e:"Счёт 26 «Общехозяйственные расходы» — управление, АУП, офис.", l:"tmc_accounts.html"},
+    {id:29, cat:"Счета", q:"На каком счёте учитывается входной НДС?", o:["19","68","90","91"], c:0, e:"Счёт 19 «НДС по приобретённым ценностям» — входной НДС.", l:"tmc_accounts.html"},
+    {id:30, cat:"Счета", q:"Какой счёт используется у переработчика для давальческого сырья?", o:["10.07","03","003","10.01"], c:2, e:"Забалансовый счёт 003 «Материалы, принятые в переработку». Счёт 03 — это доходные вложения в материальные ценности.", l:"tmc_accounts.html"},
+
+    // Документы 1С (10)
+    {id:31, cat:"Документы 1С", q:"Каким документом оформляется поступление материалов от поставщика?", o:["Поступление (акты, накладные, УПД)","Расход материалов","Отчёт производства за смену","Перемещение товаров"], c:0, e:"Раздел «Покупки» → «Поступление (акты, накладные, УПД)» → вид «Товары (накладная, УПД)».", l:"tmc_deepseek.html#module3"},
+    {id:32, cat:"Документы 1С", q:"Каким документом включается доставка в стоимость материалов?", o:["Поступление товаров","Поступление доп. расходов","Корректировка поступления","Расход материалов"], c:1, e:"«Поступление доп. расходов» (раздел «Покупки») — ТЗР включаются в стоимость материалов на счёте 10.", l:"tmc_research.html#module4"},
+    {id:33, cat:"Документы 1С", q:"Каким документом оформляется выдача материалов в цех?", o:["Перемещение товаров","Расход материалов","Отчёт производства за смену","Списание товаров"], c:1, e:"Раздел «Производство» → «Расход материалов» (ранее — «Требование-накладная»).", l:"tmc_deepseek.html#module4"},
+    {id:34, cat:"Документы 1С", q:"Какой документ одновременно списывает материалы и приходует готовую продукцию?", o:["Требование-накладная","Расход материалов","Отчёт производства за смену","Перемещение товаров"], c:2, e:"«Отчёт производства за смену» с флажком «Списать материалы» — одновременное списание и выпуск.", l:"tmc_deepseek.html#module4"},
+    {id:35, cat:"Документы 1С", q:"Каким документом оформляется инвентаризация?", o:["Инвентаризация товаров","Оприходование товаров","Списание товаров","Перемещение товаров"], c:0, e:"Раздел «Склад» → «Инвентаризация товаров». По результатам — «Оприходование» или «Списание».", l:"tmc_deepseek.html#module5"},
+    {id:36, cat:"Документы 1С", q:"Каким документом оформляются излишки при инвентаризации?", o:["Инвентаризация","Оприходование товаров","Списание товаров","Поступление товаров"], c:1, e:"«Оприходование товаров» создаётся на основании инвентаризации. Проводка: Дт 10 — Кт 91.01.", l:"tmc_deepseek.html#module5"},
+    {id:37, cat:"Документы 1С", q:"Каким документом оформляется недостача при инвентаризации?", o:["Инвентаризация","Оприходование","Списание товаров","Корректировка"], c:2, e:"«Списание товаров» создаётся на основании инвентаризации. Проводка: Дт 94 — Кт 10.", l:"tmc_deepseek.html#module5"},
+    {id:38, cat:"Документы 1С", q:"Как раньше (до 3.0.90) назывался документ «Расход материалов»?", o:["Требование-накладная (М-11)","Лимитно-заборная карта (М-8)","Накладная на отпуск (М-15)","Акт на списание"], c:0, e:"До версии 3.0.90 документ назывался «Требование-накладная» (форма М-11). В новых версиях — «Расход материалов».", l:"tmc_deepseek.html#module4"},
+    {id:39, cat:"Документы 1С", q:"Каким документом оформляются ручные проводки в 1С?", o:["Операция (бухгалтерский и налоговый учёт)","Корректировка регистров","Ручная корректировка","Прочие операции"], c:0, e:"Раздел «Операции» → «Операции» → «Операция (бухгалтерский и налоговый учёт)». Используется для сторно и забалансовых счетов.", l:"tmc_deepseek.html#module3"},
+    {id:40, cat:"Документы 1С", q:"В каком разделе 1С выполняется закрытие месяца?", o:["Главное","Операции","Отчёты","Производство"], c:1, e:"Раздел «Операции» → «Закрытие месяца». Выполняются регламентные операции.", l:"tmc_deepseek.html#module5"},
+
+    // Аббревиатуры (10)
+    {id:41, cat:"Аббревиатуры", q:"Что означает аббревиатура ТМЦ?", o:["Товарно-материальные ценности","Технические материальные ценности","Текущие материальные ценности","Торгово-материальные ценности"], c:0, e:"ТМЦ — товарно-материальные ценности. Обобщающий термин: материалы, товары, готовая продукция.", l:"tmc_resources.html#glossary"},
+    {id:42, cat:"Аббревиатуры", q:"Что означает аббревиатура МОЛ?", o:["Материалы общего лимита","Материально-ответственное лицо","Материальные оборотные лимиты","Мониторинг остатков"], c:1, e:"МОЛ — материально-ответственное лицо (кладовщик, мастер, начальник цеха).", l:"tmc_resources.html#glossary"},
+    {id:43, cat:"Аббревиатуры", q:"Что означает аббревиатура ТЗР?", o:["Трудовые затраты рабочих","Транспортно-заготовительные расходы","Товарные запасы рынка","Текущие затраты ресурсов"], c:1, e:"ТЗР — транспортно-заготовительные расходы. Включаются в себестоимость (п. 11 ФСБУ 5/2019).", l:"tmc_resources.html#glossary"},
+    {id:44, cat:"Аббревиатуры", q:"Что означает аббревиатура НЗП?", o:["Незавершённое производство","Начальные запасы продукции","Налоговые затраты периода","Недостача запасов"], c:0, e:"НЗП — незавершённое производство. Сальдо на счёте 20 после закрытия месяца.", l:"tmc_resources.html#glossary"},
+    {id:45, cat:"Аббревиатуры", q:"Что означает аббревиатура ГСМ?", o:["Готовая смазочная масса","Горюче-смазочные материалы","Государственный стандарт материалов","Группа сырьевых материалов"], c:1, e:"ГСМ — горюче-смазочные материалы. Учитываются на счёте 10.03.", l:"tmc_resources.html#glossary"},
+    {id:46, cat:"Аббревиатуры", q:"Что означает аббревиатура СИЗ?", o:["Система индивидуальной защиты","Средства индивидуальной защиты","Стандарт измерения запасов","Складские измерительные зоны"], c:1, e:"СИЗ — средства индивидуальной защиты (спецодежда, каски, перчатки).", l:"tmc_resources.html#glossary"},
+    {id:47, cat:"Аббревиатуры", q:"Что означает аббревиатура МПЗ?", o:["Материально-производственные запасы","Минимальный платёжный запас","Максимальный предел затрат","Модуль плановых закупок"], c:0, e:"МПЗ — материально-производственные запасы. Синоним запасов в контексте производства.", l:"tmc_resources.html#glossary"},
+    {id:48, cat:"Аббревиатуры", q:"Что означает аббревиатура УПД?", o:["Универсальный передаточный документ","Унифицированный платёжный документ","Учётный первичный документ","Управленческий поток данных"], c:0, e:"УПД — универсальный передаточный документ. Заменяет накладную и счёт-фактуру.", l:"tmc_resources.html#glossary"},
+    {id:49, cat:"Аббревиатуры", q:"Что означает аббревиатура ФСБУ?", o:["Финансовый стандарт бухгалтерского учёта","Федеральный стандарт бухгалтерского учёта","Форма сводного бухгалтерского учёта","Фонд стандартов бухгалтерского учёта"], c:1, e:"ФСБУ — Федеральный стандарт бухгалтерского учёта. ФСБУ 5/2019 — основной стандарт по запасам.", l:"tmc_resources.html#glossary"},
+    {id:50, cat:"Аббревиатуры", q:"Что означает аббревиатура МВЗ?", o:["Максимальный возраст запасов","Место возникновения затрат","Минимальный выпуск за смену","Модуль ввода заказов"], c:1, e:"МВЗ — место возникновения затрат (подразделение, цех, участок).", l:"tmc_resources.html#glossary"},
+
+    // Спецодежда (4)
+    {id:51, cat:"Спецодежда", q:"Как списывается спецодежда со сроком службы до 12 месяцев?", o:["Равномерно в течение срока","Единовременно при выдаче","Не списывается","Только при увольнении"], c:1, e:"Если срок службы ≤ 12 месяцев — стоимость списывается единовременно на 20/25/26/44 при выдаче.", l:"tmc_research.html#module5"},
+    {id:52, cat:"Спецодежда", q:"Как гасится стоимость спецодежды со сроком службы более 12 месяцев?", o:["Единовременно","Регламентной операцией «Погашение стоимости спецодежды»","Не гасится","Только при возврате"], c:1, e:"При сроке > 12 месяцев стоимость гасится равномерно регламентной операцией в конце месяца.", l:"tmc_research.html#module5"},
+    {id:53, cat:"Спецодежда", q:"Какая проводка при выдаче спецодежды сотруднику?", o:["Дт 20 — Кт 10.10","Дт 10.11.1 — Кт 10.10","Дт 10.10 — Кт 60","Дт 94 — Кт 10.10"], c:1, e:"Выдача спецодежды — это перемещение со счёта 10.10 на счёт 10.11.1, а не списание в затраты.", l:"tmc_research.html#module5"},
+    {id:54, cat:"Спецодежда", q:"Куда возвращается спецодежда при возврате от сотрудника?", o:["Со 10.11.1 на 10.10","Со 10.10 на 10.11.1","Со 10.11.1 на 20","Сразу на 91.02"], c:0, e:"При возврате спецодежды оформляется обратное перемещение: со счёта 10.11.1 на счёт 10.10.", l:"tmc_research.html#module5"},
+
+    // Давальческое (4)
+    {id:55, cat:"Давальческое", q:"Что учитывается на счёте 003?", o:["Давальческое сырьё у переработчика","Готовая продукция","Отходы производства","Товары для перепродажи"], c:0, e:"Счёт 003 «Материалы, принятые в переработку» — забалансовый, для учёта давальческого сырья у переработчика.", l:"tmc_research.html#module6"},
+    {id:56, cat:"Давальческое", q:"Что учитывается на счёте 03?", o:["Давальческое сырьё у переработчика","Доходные вложения в материальные ценности","Готовая продукция","Материалы в переработке"], c:1, e:"Счёт 03 «Доходные вложения в материальные ценности» — не имеет отношения к давальческой схеме. Для давальческого у переработчика — 003.", l:"tmc_research.html#module6"},
+    {id:57, cat:"Давальческое", q:"По какой цене учитывается давальческое сырьё у переработчика?", o:["По рыночной стоимости","По цене, указанной в договоре","По нулевой стоимости","По фактической себестоимости"], c:1, e:"Давальческое сырьё учитывается на счёте 003 по стоимости, указанной в договоре.", l:"tmc_research.html#module6"},
+    {id:58, cat:"Давальческое", q:"На каком счёте учитывается давальческое сырьё у давальца?", o:["003","10.01","10.07","20.01"], c:2, e:"Счёт 10.07 «Материалы, переданные в переработку на сторону» — для давальца.", l:"tmc_research.html#module6"},
+
+    // Инвентаризация (4)
+    {id:59, cat:"Инвентаризация", q:"В каком случае инвентаризация обязательна?", o:["Только в конце года","При смене МОЛ, подозрении на хищение, расхождении учёта","Только при проверке налоговой","Только при желании руководителя"], c:1, e:"Инвентаризация обязательна при смене МОЛ, подозрении на порчу/хищение, после ЧС, при расхождении учёта.", l:"tmc_deepseek.html#module5"},
+    {id:60, cat:"Инвентаризация", q:"При каких условиях возможен зачёт пересортицы?", o:["При совпадении суммы","При полном совпадении наименования, количества и цены","По решению кладовщика","Всегда, если есть излишек и недостача"], c:1, e:"Пересортица возможна только при полном совпадении наименования, количества, цены и МОЛ. Иначе — это две отдельные ошибки.", l:"tmc_errors.html"},
+    {id:61, cat:"Инвентаризация", q:"Какой стандарт регулирует инвентаризацию с 2026 года?", o:["ФСБУ 5/2019","ФСБУ 28/2023","ПБУ 1/2008","Методические указания № 49"], c:1, e:"ФСБУ 28/2023 «Инвентаризация» — обязателен с 1 апреля 2026 года.", l:"tmc_2026.html"},
+    {id:62, cat:"Инвентаризация", q:"Каким документом в 1С оформляются излишки при инвентаризации?", o:["Списание товаров","Оприходование товаров","Поступление товаров","Перемещение товаров"], c:1, e:"«Оприходование товаров» создаётся на основании инвентаризации. Проводка: Дт 10 — Кт 91.01.", l:"tmc_deepseek.html#module5"},
+
+    // Закрытие месяца (4)
+    {id:63, cat:"Закрытие месяца", q:"Что нужно проверить перед закрытием месяца по ТМЦ?", o:["Только сумму НДС","Отсутствие отрицательных остатков","Только счёт 60","Только отчёты для налоговой"], c:1, e:"Перед закрытием проверьте отсутствие отрицательных остатков по счетам 10, 20, 43 и корректность проводок.", l:"tmc_deepseek.html#module5"},
+    {id:64, cat:"Закрытие месяца", q:"На какой счёт распределяются косвенные расходы 25 и 26?", o:["На 10","На 20","На 43","На 90"], c:1, e:"При закрытии месяца косвенные расходы 25 и 26 распределяются на счёт 20 по выбранной базе.", l:"tmc_deepseek.html#module5"},
+    {id:65, cat:"Закрытие месяца", q:"Что такое НЗП?", o:["Недостача запасов продукции","Незавершённое производство — сальдо на счёте 20 после закрытия","Начальные запасы периода","Налоговые затраты периода"], c:1, e:"НЗП — незавершённое производство. Отражается как дебетовое сальдо счёта 20 после закрытия месяца.", l:"tmc_research.html#module1"},
+    {id:66, cat:"Закрытие месяца", q:"Что выполняет регламентная операция «Расчёт себестоимости»?", o:["Списывает материалы","Рассчитывает фактическую себестоимость выпуска и списания","Формирует отчёты","Закрывает кассу"], c:1, e:"Регламентная операция «Расчёт себестоимости» (в составе закрытия месяца) рассчитывает фактическую себестоимость и пересчитывает среднюю цену списания.", l:"tmc_deepseek.html#module5"},
+
+    // Ошибки (4)
+    {id:67, cat:"Ошибки", q:"Что чаще всего становится причиной отрицательного остатка по количеству на складе?", o:["Ошибка в НДС","Нарушение хронологии документов (списание раньше поступления)","Неверная ставка налога","Отсутствие зарплаты"], c:1, e:"Нарушение хронологии — самая частая причина. Списание проведено раньше, чем поступление.", l:"tmc_errors.html"},
+    {id:68, cat:"Ошибки", q:"Что становится причиной минуса по сумме при плюсе по количеству?", o:["Не выполнено закрытие месяца (расчёт себестоимости)","Неверно указан НДС","Ошибка в спецификации","Нет норм естественной убыли"], c:0, e:"Минус по сумме обычно связан с тем, что не выполнена регламентная операция «Расчёт себестоимости» при закрытии месяца.", l:"tmc_errors.html"},
+    {id:69, cat:"Ошибки", q:"Спецодежда «зависла» на счёте 10.10 после выдачи. В чём причина?", o:["Не оформлена передача в эксплуатацию","Неверная ставка НДС","Не создана спецификация","Не заполнен МОЛ"], c:0, e:"Если спецодежда выдана, но не оформлена «Передача материалов в эксплуатацию», она остаётся на счёте 10.10.", l:"tmc_errors.html"},
+    {id:70, cat:"Ошибки", q:"Счёт 20 «не закрывается» после закрытия месяца. Это всегда ошибка?", o:["Да, всегда","Нет, это может быть НЗП","Зависит от версии 1С","Только если сумма большая"], c:1, e:"Сальдо на счёте 20 после закрытия — это НЗП. Не всегда ошибка. Ошибка — если НЗП там, где его не должно быть.", l:"tmc_errors.html"}
+];
+
+// ============================================================
+// СОСТОЯНИЕ И ХРАНИЛИЩЕ
+// ============================================================
+const WRONG_KEY = 'tmc_marathon_wrong_v2';
+const STATS_KEY = 'tmc_marathon_stats_v2';
+const ATTEMPTS_KEY = 'tmc_marathon_attempts_v2';
+const MASTERED_KEY = 'tmc_marathon_mastered_v2';
+
+let state = {
+    queue: [],
+    current: 0,
+    correct: 0,
+    wrong: 0,
+    wrongIds: new Set(),
+    startTime: null,
+    answered: false,
+    currentQ: null
+};
+
+function loadSet(key) {
+    try { return new Set(JSON.parse(localStorage.getItem(key) || '[]')); }
+    catch { return new Set(); }
+}
+function saveSet(key, set) {
+    try { localStorage.setItem(key, JSON.stringify([...set])); } catch {}
+}
+function loadNumber(key) {
+    try { return +(localStorage.getItem(key) || 0); } catch { return 0; }
+}
+function saveNumber(key, val) {
+    try { localStorage.setItem(key, String(val)); } catch {}
+}
+function loadStats() {
+    try { return JSON.parse(localStorage.getItem(STATS_KEY) || 'null'); } catch { return null; }
+}
+function saveStats(stats) {
+    try { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); } catch {}
+}
+
+function clearWrong() {
+    if (!confirm('Сбросить весь прогресс марафона: ошибки, освоенные вопросы и статистику?')) return;
+    localStorage.removeItem(WRONG_KEY);
+    localStorage.removeItem(STATS_KEY);
+    localStorage.removeItem(ATTEMPTS_KEY);
+    localStorage.removeItem(MASTERED_KEY);
+    updateStartScreen();
+}
+
+// ============================================================
+// СТАРТОВЫЙ ЭКРАН
+// ============================================================
+function updateStartScreen() {
+    const wrongSet = loadSet(WRONG_KEY);
+    const masteredSet = loadSet(MASTERED_KEY);
+    const attempts = loadNumber(ATTEMPTS_KEY);
+
+    document.getElementById('totalStat').textContent = questions.length;
+    document.getElementById('masteredStat').textContent = masteredSet.size;
+    document.getElementById('wrongStat').textContent = wrongSet.size;
+    document.getElementById('attemptsStat').textContent = attempts;
+
+    document.getElementById('wrongCardCount').textContent = wrongSet.size + ' ' + pluralize(wrongSet.size, 'вопрос', 'вопроса', 'вопросов');
+
+    const wrongCard = document.getElementById('wrongModeCard');
+    if (wrongSet.size === 0) {
+        wrongCard.classList.add('disabled');
+    } else {
+        wrongCard.classList.remove('disabled');
+    }
+
+    // Статистика последнего марафона
+    const stats = loadStats();
+    const panel = document.getElementById('lastResultPanel');
+    if (stats) {
+        panel.style.display = 'flex';
+        document.getElementById('lrValue').textContent = `${stats.correct} / ${stats.total} (${Math.round(stats.correct / stats.total * 100)}%)`;
+        document.getElementById('lrMeta').textContent = `${stats.date} · ${stats.time} · ${stats.mode || 'полный марафон'}`;
+    } else {
+        panel.style.display = 'none';
+    }
+
+    renderCategories();
+}
+
+function renderCategories() {
+    const wrongSet = loadSet(WRONG_KEY);
+    const masteredSet = loadSet(MASTERED_KEY);
+
+    const cats = {};
+    questions.forEach(q => {
+        if (!cats[q.cat]) cats[q.cat] = {total: 0, wrong: 0, mastered: 0, ids: []};
+        cats[q.cat].total++;
+        cats[q.cat].ids.push(q.id);
+        if (wrongSet.has(q.id)) cats[q.cat].wrong++;
+        if (masteredSet.has(q.id)) cats[q.cat].mastered++;
+    });
+
+    const grid = document.getElementById('categoriesGrid');
+    grid.innerHTML = Object.keys(cats).map(cat => {
+        const c = cats[cat];
+        const masteredPct = Math.round(c.mastered / c.total * 100);
+        return `
+            <div class="cat-card" onclick="startCategory('${cat.replace(/'/g, "\\'")}')">
+                ${c.wrong > 0 ? `<span class="cat-wrong-badge">${c.wrong}</span>` : ''}
+                <span class="cat-name">${cat}</span>
+                <div class="cat-meta">
+                    <span>${c.total} вопросов</span>
+                    <span>${masteredPct}% освоено</span>
+                </div>
+                <div class="cat-bar"><div class="cat-bar-fill" style="width: ${masteredPct}%"></div></div>
+            </div>
+        `;
+    }).join('');
+}
+
+function pluralize(n, one, few, many) {
+    const m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+    return many;
+}
+
+function goHome() {
+    document.getElementById('quizScreen').style.display = 'none';
+    document.getElementById('endScreen').style.display = 'none';
+    document.getElementById('startScreen').style.display = 'block';
+    updateStartScreen();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ============================================================
+// ЗАПУСК МАРАФОНА
+// ============================================================
+function startMarathon(mode) {
+    let pool = [...questions];
+    let modeLabel = '';
+
+    if (mode === 'wrong') {
+        const wrongSet = loadSet(WRONG_KEY);
+        pool = pool.filter(q => wrongSet.has(q.id));
+        if (pool.length === 0) {
+            alert('Нет ошибок для отработки. Начните с полного марафона.');
+            return;
+        }
+        modeLabel = 'работа над ошибками';
+    } else if (mode === 'random10') {
+        pool = shuffle(pool).slice(0, 10);
+        modeLabel = 'разминка (10)';
+    } else if (mode === 'random20') {
+        pool = shuffle(pool).slice(0, 20);
+        modeLabel = 'случайные 20';
+    } else {
+        pool = shuffle(pool);
+        modeLabel = 'полный марафон';
+    }
+
+    state = {
+        queue: pool,
+        current: 0,
+        correct: 0,
+        wrong: 0,
+        wrongIds: new Set(),
+        startTime: Date.now(),
+        answered: false,
+        currentQ: null,
+        mode: mode,
+        modeLabel: modeLabel
+    };
+
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('endScreen').style.display = 'none';
+    document.getElementById('quizScreen').style.display = 'block';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    renderQuestion();
+}
+
+function startCategory(cat) {
+    const pool = shuffle(questions.filter(q => q.cat === cat));
+    if (pool.length === 0) return;
+
+    state = {
+        queue: pool,
+        current: 0,
+        correct: 0,
+        wrong: 0,
+        wrongIds: new Set(),
+        startTime: Date.now(),
+        answered: false,
+        currentQ: null,
+        mode: 'category',
+        modeLabel: cat
+    };
+
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('endScreen').style.display = 'none';
+    document.getElementById('quizScreen').style.display = 'block';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    renderQuestion();
+}
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+// ============================================================
+// РЕНДЕР ВОПРОСА
+// ============================================================
+function renderQuestion() {
+    state.answered = false;
+    state.currentQ = state.queue[state.current];
+    const q = state.currentQ;
+
+    document.getElementById('category').textContent = q.cat;
+    document.getElementById('questionNumber').textContent = `Вопрос ${state.current + 1} из ${state.queue.length}`;
+    document.getElementById('questionText').textContent = q.q;
+
+    const optionsEl = document.getElementById('options');
+    const labels = ['А', 'Б', 'В', 'Г', 'Д'];
+    optionsEl.innerHTML = q.o.map((opt, i) =>
+        `<button class="option-btn" data-index="${i}" onclick="answer(${i})">
+            <span class="opt-label">${labels[i]}</span>
+            <span class="opt-text">${opt}</span>
+        </button>`
+    ).join('');
+
+    document.getElementById('explanation').className = 'explanation';
+    document.getElementById('explanation').innerHTML = '';
+    document.getElementById('nextBtn').classList.remove('show');
+    document.getElementById('nextBtn').querySelector('span').textContent =
+        state.current === state.queue.length - 1 ? 'Показать результаты' : 'Следующий вопрос';
+
+    // Анимация карточки
+    const card = document.getElementById('questionCard');
+    card.style.animation = 'none';
+    card.offsetHeight;
+    card.style.animation = 'slideIn 0.3s ease';
+
+    updateHeader();
+}
+
+function updateHeader() {
+    const total = state.queue.length;
+    const pct = Math.round((state.current) / total * 100);
+    document.getElementById('counter').textContent = `${state.current + 1} / ${total}`;
+    document.getElementById('progressPercent').textContent = pct + '%';
+    document.getElementById('scoreCorrect').textContent = state.correct;
+    document.getElementById('scoreWrong').textContent = state.wrong;
+    document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ============================================================
+// ОТВЕТ
+// ============================================================
+function answer(index) {
+    if (state.answered) return;
+    state.answered = true;
+
+    const q = state.currentQ;
+    const isCorrect = index === q.correct;
+
+    document.querySelectorAll('.option-btn').forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === q.correct) btn.classList.add('correct');
+        else if (i === index) btn.classList.add('incorrect');
+    });
+
+    // Обновляем глобальные списки
+    const wrongSet = loadSet(WRONG_KEY);
+    const masteredSet = loadSet(MASTERED_KEY);
+
+    if (isCorrect) {
+        state.correct++;
+        wrongSet.delete(q.id);
+        masteredSet.add(q.id);
+    } else {
+        state.wrong++;
+        state.wrongIds.add(q.id);
+        wrongSet.add(q.id);
+        masteredSet.delete(q.id);
+    }
+
+    saveSet(WRONG_KEY, wrongSet);
+    saveSet(MASTERED_KEY, masteredSet);
+
+    const expEl = document.getElementById('explanation');
+    expEl.className = 'explanation show ' + (isCorrect ? 'correct' : 'incorrect');
+    expEl.innerHTML =
+        `<strong>${isCorrect ? '✅ Верно!' : '❌ Неверно.'}</strong>${q.e}` +
+        (q.l ? `<a href="${q.l}">Подробнее в курсе →</a>` : '');
+
+    document.getElementById('nextBtn').classList.add('show');
+    updateHeader();
+    document.getElementById('progressFill').style.width = ((state.current + 1) / state.queue.length * 100) + '%';
+}
+
+// ============================================================
+// СЛЕДУЮЩИЙ / РЕЗУЛЬТАТЫ
+// ============================================================
+function nextQuestion() {
+    if (!state.answered) return;
+
+    if (state.current < state.queue.length - 1) {
+        state.current++;
+        renderQuestion();
+        document.getElementById('questionCard').scrollIntoView({behavior: 'smooth', block: 'start'});
+    } else {
+        showResults();
+    }
+}
+
+function showResults() {
+    const total = state.queue.length;
+    const percent = Math.round(state.correct / total * 100);
+    const elapsed = Math.round((Date.now() - state.startTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    const timeStr = `${mins}:${String(secs).padStart(2, '0')}`;
+
+    document.getElementById('finalScore').textContent = `${state.correct} / ${total}`;
+    document.getElementById('finalPercent').textContent = percent + '% правильных';
+    document.getElementById('finalCorrect').textContent = state.correct;
+    document.getElementById('finalWrong').textContent = state.wrong;
+    document.getElementById('finalTime').textContent = timeStr;
+
+    // Вердикт
+    const verdictEl = document.getElementById('resultVerdict');
+    const resultCard = document.getElementById('resultCard');
+    resultCard.classList.remove('perfect');
+    let verdict = '';
+    if (percent === 100) {
+        verdict = '🏆 Идеально! Все ответы верны.';
+        resultCard.classList.add('perfect');
+    } else if (percent >= 90) {
+        verdict = '🌟 Отлично! Осталось совсем чуть-чуть.';
+    } else if (percent >= 75) {
+        verdict = '👍 Хорошо! Но есть над чем поработать.';
+    } else if (percent >= 50) {
+        verdict = '💪 Неплохо, но нужно повторить материал.';
+    } else {
+        verdict = '📚 Стоит вернуться к курсу и попробовать снова.';
+    }
+    verdictEl.textContent = verdict;
+
+    // Кнопка «Повторить ошибки»
+    const retryBtn = document.getElementById('retryWrongBtn');
+    if (state.wrongIds.size > 0) {
+        retryBtn.style.display = 'inline-block';
+        retryBtn.textContent = `Повторить ошибки (${state.wrongIds.size})`;
+    } else {
+        retryBtn.style.display = 'none';
+    }
+
+    // Список ошибок
+    const wrongSection = document.getElementById('wrongSection');
+    const wrongList = document.getElementById('wrongList');
+    if (state.wrongIds.size > 0) {
+        wrongSection.style.display = 'block';
+        wrongList.innerHTML = [...state.wrongIds].map(id => {
+            const q = questions.find(x => x.id === id);
+            if (!q) return '';
+            return `<div class="wrong-item">
+                <div class="wq">${q.q}</div>
+                <div class="wa">✓ Правильно: ${q.o[q.correct]}</div>
+                <div class="wexp">${q.e}</div>
+            </div>`;
+        }).join('');
+    } else {
+        wrongSection.style.display = 'none';
+    }
+
+    // Статистика
+    saveStats({
+        correct: state.correct,
+        total: total,
+        date: new Date().toLocaleDateString('ru-RU'),
+        time: timeStr,
+        mode: state.modeLabel
+    });
+    saveNumber(ATTEMPTS_KEY, loadNumber(ATTEMPTS_KEY) + 1);
+
+    document.getElementById('quizScreen').style.display = 'none';
+    document.getElementById('endScreen').style.display = 'block';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ============================================================
+// КЛАВИАТУРА
+// ============================================================
+document.addEventListener('keydown', (e) => {
+    // Не перехватываем, если фокус в поле ввода
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+    if (e.key === 'Enter' && state.answered && document.getElementById('nextBtn').classList.contains('show')) {
+        e.preventDefault();
+        nextQuestion();
+    }
+    if (!state.answered && state.currentQ) {
+        const num = parseInt(e.key);
+        if (num >= 1 && num <= state.currentQ.o.length) {
+            e.preventDefault();
+            answer(num - 1);
+        }
+    }
+});
+
+// ============================================================
+// ИНИЦИАЛИЗАЦИЯ
+// ============================================================
+updateStartScreen();
+</script>
+</body>
+</html>
