@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Что изменилось в учёте ТМЦ в 2026 году</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .change-card {
+            background: var(--p-white);
+            border: 1px solid var(--color-border);
+            border-left: 5px solid #1565c0;
+            padding: 25px 28px;
+            margin-bottom: 20px;
+        }
+        .change-date {
+            display: inline-block;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            padding: 4px 10px;
+            background: #1565c0;
+            color: white;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .change-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        .change-desc {
+            font-size: 0.92rem;
+            color: var(--color-text-muted);
+            margin-bottom: 15px;
+        }
+        .change-what h4 {
+            font-family: var(--font-text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 15px 0 8px 0;
+            color: var(--color-text);
+        }
+        .change-what ul {
+            margin: 0 0 10px 0;
+            padding-left: 1.4em;
+        }
+        .change-what li { margin-bottom: 6px; font-size: 0.92rem; }
+        .source-link {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--color-text);
+            color: var(--color-text);
+        }
+        .source-link:hover { color: var(--color-accent-text); border-bottom-color: var(--color-accent-text); }
+        .law-ref {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            font-style: italic;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="wordmark">КУРС<span>ТМЦ</span><i>1С:БУХГАЛТЕРИЯ 8.3</i></a>
+        <div class="header-nav"><a href="index.html">← В КАТАЛОГ</a></div>
+    </header>
+
+    <div class="course-wrap">
+
+        <h1>Что изменилось<br>в учёте ТМЦ в 2026 году</h1>
+
+        <div class="course-info">
+            <p><strong>Для чего:</strong> чтобы ваш учёт соответствовал актуальным требованиям. С 2026 года вступили в силу изменения по ЭДО, налоговому контролю и инвентаризации.</p>
+            <p><strong>Источники:</strong> официальные разъяснения, экспертные обзоры (cleverence.ru, klerk.ru, rnk.ru, buh.ru, its.1c.ru).</p>
+        </div>
+
+        <!-- Изменение 1 -->
+        <div class="change-card">
+            <span class="change-date">С 1 января 2026</span>
+            <div class="change-title">Обязательный электронный документооборот (ЭДО)</div>
+            <div class="change-desc">
+                Все операции с запасами — приём, перемещение, списание — должны фиксироваться в электронных формах, интегрированных с налоговой системой[reference:13].
+            </div>
+            <div class="change-what">
+                <h4>Что это значит для вас</h4>
+                <ul>
+                    <li>Электронный <strong>УПД</strong> стал обязательным вместо электронных ТОРГ-12 и актов. Формат — <strong>УПД 5.03</strong>[reference:14].</li>
+                    <li>Если вы ещё работаете с бумажными первичными документами по ТМЦ — нужно срочно переходить на ЭДО с контрагентами.</li>
+                    <li>В 1С проверьте настройки обмена с операторами ЭДО (Диадок, СБИС, Такском).</li>
+                </ul>
+            </div>
+            <a href="https://www.cleverence.ru/articles/bukhgalteriya/uchet-tmts-na-predpriyatii-pravila-poryadok-i-metody-spisaniya-tovarno-materialnykh-tsennostey-v-org/" class="source-link" target="_blank">Источник: cleverence.ru, обзор изменений 2026</a>
+        </div>
+
+        <!-- Изменение 2 -->
+        <div class="change-card">
+            <span class="change-date">2026</span>
+            <div class="change-title">Усиленный налоговый контроль списаний</div>
+            <div class="change-desc">
+                ФНС получит возможность автоматизированного сопоставления данных ЭДО с декларациями. Это повысит точность проверки обоснованности списаний[reference:15].
+            </div>
+            <div class="change-what">
+                <h4>Что это значит для вас</h4>
+                <ul>
+                    <li>Любое списание ТМЦ должно быть <strong>обосновано документально</strong>: акты, требования-накладные, отчёты производства.</li>
+                    <li>Особенно внимательно — к списаниям <strong>сверх норм естественной убыли</strong>: если нормы не установлены в учётной политике, обосновать расходы будет сложно.</li>
+                    <li>Проверьте, что все документы по списанию в 1С проведены и имеют корректные основания.</li>
+                </ul>
+            </div>
+            <a href="https://www.cleverence.ru/articles/bukhgalteriya/uchet-tmts-na-predpriyatii-pravila-poryadok-i-metody-spisaniya-tovarno-materialnykh-tsennostey-v-org/" class="source-link" target="_blank">Источник: cleverence.ru</a>
+        </div>
+
+        <!-- Изменение 3 -->
+        <div class="change-card">
+            <span class="change-date">С 1 апреля 2026 (обязательно для всех)</span>
+            <div class="change-title">ФСБУ 28/2023 «Инвентаризация» — новый стандарт</div>
+            <div class="change-desc">
+                Стандарт закрепил порядок проведения инвентаризации, периодичность и требования к документированию. Обязателен для всех компаний[reference:16].
+            </div>
+            <div class="change-what">
+                <h4>Что изменилось</h4>
+                <ul>
+                    <li><strong>Периодичность:</strong> материальные запасы можно инвентаризировать раз в три года, товары — ежегодно[reference:17].</li>
+                    <li><strong>Фото- и видеофиксация</strong> разрешена, если имущество в труднодоступной местности[reference:18].</li>
+                    <li><strong>Правила зачёта пересортицы</strong> сохранены: только при совпадении наименования, количества, периода и МОЛ[reference:19].</li>
+                    <li>Нужно <strong>переутвердить формы документов</strong> в учётной политике, если в них упоминаются старые Методические указания № 49[reference:20].</li>
+                </ul>
+            </div>
+            <a href="https://www.rnk.ru/article/218277-fsbu-inventarizatsiya-kak-primenyat" class="source-link" target="_blank">Источник: rnk.ru, разбор ФСБУ 28/2023</a>
+        </div>
+
+        <!-- Изменение 4 -->
+        <div class="change-card">
+            <span class="change-date">С версии 1С 3.0.196 (24 апреля 2026)</span>
+            <div class="change-title">Упаковки номенклатуры — учёт в разных единицах измерения</div>
+            <div class="change-desc">
+                Можно оформлять приход и реализацию одного и того же товара в разных единицах измерения, используя <strong>одну карточку номенклатуры</strong>[reference:21].
+            </div>
+            <div class="change-what">
+                <h4>Что это значит для вас</h4>
+                <ul>
+                    <li>В карточке товара появилась вкладка <strong>«Упаковки»</strong> — можно создать дополнительные единицы измерения для документов поставщика и покупателя[reference:22].</li>
+                    <li>Учёт ведётся в <strong>одной базовой единице</strong> (единице остатков), а количество упаковок пересчитывается по коэффициенту[reference:23].</li>
+                    <li>Включите функциональность: <strong>Главное → Настройки → Функциональность → Запасы → Упаковки номенклатуры</strong>[reference:24].</li>
+                    <li>При получении УПД по ЭДО единица измерения поставщика заполнится автоматически, если она указана в карточке как вариант упаковки[reference:25].</li>
+                </ul>
+            </div>
+            <a href="https://buh.ru/video/1s-bukhgalteriya-8-kak-uchityvat-upakovki-nomenklatury.html" class="source-link" target="_blank">Источник: buh.ru, инструкция по упаковкам</a>
+        </div>
+
+        <!-- Изменение 5 -->
+        <div class="change-card">
+            <span class="change-date">С 1 июля 2026</span>
+            <div class="change-title">Усиление связки маркировки, ЭДО и налогового контроля</div>
+            <div class="change-desc">
+                Работа с маркировкой, ЭДО и прослеживаемостью становится обязательной. ФНС через АСК НДС-3 видит движение кодов и выявляет разрывы[reference:26].
+            </div>
+            <div class="change-what">
+                <h4>Что это значит для вас</h4>
+                <ul>
+                    <li>Если ваша продукция подлежит маркировке — проверьте, что все коды передаются в «Честный ЗНАК».</li>
+                    <li><strong>Списание и производство</strong> — зона риска: ошибки в списании маркированных товаров видны контролёрам мгновенно[reference:27].</li>
+                    <li>Убедитесь, что в 1С настроена интеграция с системой маркировки.</li>
+                </ul>
+            </div>
+            <a href="https://www.klerk.ru/" class="source-link" target="_blank">Источник: klerk.ru, обзор маркировки 2026</a>
+        </div>
+
+        <div class="self-check">
+            <strong>Что проверить в своей 1С прямо сейчас:</strong>
+            <ul style="margin-top: 8px;">
+                <li>Включена ли функциональность «Упаковки номенклатуры» (если нужно вести учёт в разных единицах).</li>
+                <li>Настроен ли ЭДО с ключевыми контрагентами.</li>
+                <li>Обновлены ли формы документов для инвентаризации под ФСБУ 28/2023.</li>
+                <li>Установлены ли нормы естественной убыли в учётной политике (для обоснования списаний).</li>
+            </ul>
+        </div>
+
+        <footer class="footer">
+            <div><strong>КУРС ТМЦ</strong> · изменения 2026</div>
+            <div><a href="index.html">Вернуться в каталог</a></div>
+        </footer>
+    </div>
+</body>
+</html>
