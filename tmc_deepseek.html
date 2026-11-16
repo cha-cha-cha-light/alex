@@ -1,1 +1,383 @@
-PLACEHOLDER_DEEPSEEK
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курс: Бухгалтер по учету ТМЦ на производстве</title>
+    <!-- Подключаем общий файл стилей -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="wordmark">
+            КУРС<span>ТМЦ</span>
+            <i>1С:БУХГАЛТЕРИЯ 8.3</i>
+        </a>
+        <div class="header-nav">
+            <a href="index.html">← В КАТАЛОГ</a>
+        </div>
+    </header>
+
+    <div class="course-wrap">
+
+        <h1>Бухгалтер по учету ТМЦ<br>на производстве</h1>
+
+        <div class="course-info">
+            <p><strong>Для кого:</strong> вы — бухгалтер (или хотите им стать), вам нужно освоить участок ТМЦ на производстве и научиться работать в 1С 8.3.</p>
+            <p><strong>Как проходить:</strong> читаете теорию → выполняете задания в своей учебной базе 1С → сверяетесь с чек-листами → в конце проходите тест для самопроверки.</p>
+            <p><strong>Сколько времени:</strong> 40–60 часов. Можно растянуть на 2–4 недели по 2–3 часа в день.</p>
+            <p><strong>Проверка материала:</strong> факты, названия документов и ссылки проверены по официальным источникам (ФСБУ 5/2019, 1С:ИТС, БУХ.1С) 16.11.2026. Скриншоты — из реальной 1С:Бухгалтерии 8.3, источник указан под каждым изображением.</p>
+        </div>
+
+        <div class="module">
+            <h2>МОДУЛЬ 1. Теория: что нужно знать до работы в 1С</h2>
+
+            <h3>1.1. Главный документ — ФСБУ 5/2019 «Запасы»</h3>
+            <p>Это стандарт, который регулирует учет материалов (ТМЦ). Он утверждён приказом Минфина России от 15.11.2019 № 180н и обязателен к применению с отчётности за 2021 год (заменил ПБУ 5/01). Вам нужно запомнить три вещи:</p>
+            <ol>
+                <li><strong>Запасы оцениваются при поступлении</strong> — по фактической себестоимости (сюда входят цена поставщика, доставка, страхование, невозвратные налоги — п. 9–11 ФСБУ 5/2019). Возмещаемый НДС в себестоимость <strong>не включается</strong> (п. 12).</li>
+                <li><strong>При выбытии (списании в производство)</strong> вы выбираете один из трех методов (п. 36 ФСБУ 5/2019):
+                    <ul>
+                        <li>по себестоимости каждой единицы (для уникальных материалов);</li>
+                        <li>по средней себестоимости (самый частый вариант);</li>
+                        <li>ФИФО (сначала списываются более ранние партии).</li>
+                    </ul>
+                </li>
+                <li><strong>Выбранный метод фиксируется в учетной политике</strong> — и 1С должна быть настроена соответствующим образом.</li>
+            </ol>
+
+            <h3>1.2. Документы, которые вы будете оформлять</h3>
+            <table>
+                <thead>
+                    <tr><th>Документ</th><th>Зачем нужен</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Приходная накладная (или УПД)</td><td>Оприходовать материалы от поставщика</td></tr>
+                    <tr><td>Поступление доп. расходов</td><td>Включить доставку в стоимость материалов</td></tr>
+                    <tr><td>Расход материалов (ранее — требование-накладная, форма М-11)</td><td>Списать материалы со склада в цех</td></tr>
+                    <tr><td>Отчет производства за смену</td><td>Одновременно списать материалы по норме и приходовать готовую продукцию</td></tr>
+                    <tr><td>Инвентаризационная опись (ИНВ-3)</td><td>Сверить фактическое наличие с учетом</td></tr>
+                </tbody>
+            </table>
+            <p><em>Примечание:</em> начиная с версии 3.0.90 «1С:Бухгалтерии 8» документ «Требование-накладная» переименован в «Расход материалов (требования-накладные)». Это один и тот же документ.</p>
+
+            <h3>1.3. Проверьте себя (устно, без 1С)</h3>
+            <ul>
+                <li>Чем отличается расход материалов (требование-накладная) от отчета производства за смену?</li>
+                <li>Если вы выбрали метод средней себестоимости, в какой момент 1С рассчитает стоимость списания?</li>
+                <li>Какие расходы включаются в фактическую себестоимость материалов?</li>
+            </ul>
+            <p>Если не ответили — вернитесь к пунктам 1.1 и 1.2, это база.</p>
+
+            <h4>Дополнительные материалы</h4>
+            <div class="resources">
+                <a href="https://buh.ru/video/1s-bukhgalteriya-8-red-3-0-kak-otrazhat-raskhod-materialov-video.html#1" class="video-link" target="_blank">Видео: как отражать расход материалов (buh.ru — официальный журнал «БУХ.1С»)</a>
+                <a href="https://buh.ru/articles/otrazhenie-raskhoda-materialov-v-1s-bukhgalterii-8.html" class="article-link" target="_blank">Статья экспертов 1С: учёт расхода материалов в «1С:Бухгалтерии 8» (buh.ru)</a>
+            </div>
+        </div>
+
+        <div class="module">
+            <h2>МОДУЛЬ 2. Настройка 1С: что сделать один раз в начале</h2>
+
+            <h3>2.1. Учетная политика</h3>
+            <p>Откройте: <strong>Главное → Учетная политика</strong>.<br>
+            Выберите способ оценки МПЗ: <strong>«По средней стоимости»</strong> (рекомендую для начала — это самый распространенный вариант; также доступно ФИФО).<br>
+            Запомните: от этой настройки зависит, как 1С будет списывать материалы в производство.</p>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://topkoder.ru/wp-content/uploads/2025/11/Uchetnaya-politika-1.png" alt="Учетная политика в 1С: выбор способа оценки МПЗ" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Учетная политика в 1С:Бухгалтерии 8.3 — здесь выбирается способ оценки МПЗ · Скриншот: <a href="https://topkoder.ru/stati/uchet-tmc-v-1s-buhgalteriya-predpriyatiya/" target="_blank">topkoder.ru</a></figcaption>
+            </figure>
+
+            <h3>2.2. Справочник «Номенклатура» и спецификации</h3>
+            <p>Вам нужно создать:</p>
+            <ul>
+                <li>готовую продукцию (например, «Изделие А») — вид номенклатуры «Продукция»;</li>
+                <li>материалы (например, «Сталь листовая», «Краска», «Болт») — вид номенклатуры «Материалы».</li>
+            </ul>
+            <p><strong>Важно:</strong> для готовой продукции создайте <strong>спецификацию</strong> — перечень материалов на одну единицу изделия. Это позволит 1С автоматически списывать материалы при выпуске.</p>
+            <div class="self-check">
+                <strong>Как создать спецификацию (два способа):</strong><br>
+                1) <strong>Справочники → группа «Производство» → Спецификации → Создать</strong> — и заполнить перечень материалов;<br>
+                2) из карточки номенклатуры «Изделие А» — по ссылке «Спецификации» на панели навигации.<br>
+                Если группы «Производство» в разделе «Справочники» нет — включите функциональность производства: <strong>Главное → Настройки → Функциональность</strong>.
+            </div>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://www.arenda1c.ru/img/instruktion/1sbuhgalteria/speczifikacziya-gotovoj-produkczii/3.jpg" alt="Справочники → Производство → Спецификации в 1С:Бухгалтерии" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Где находится справочник «Спецификации»: Справочники → Производство → Спецификации · Скриншот: <a href="https://www.arenda1c.ru/instrukcii-po-1s/1s-buhgalteriya/speczifikacziya-gotovoj-produkczii.html" target="_blank">arenda1c.ru</a></figcaption>
+            </figure>
+
+            <div class="task">
+                <h4>📝 Задание 2.1 (сделайте в своей учебной базе)</h4>
+                <ol>
+                    <li>Настройте учетную политику: оценка МПЗ — по средней стоимости.</li>
+                    <li>Создайте номенклатуру: «Изделие А», «Сталь листовая 2 мм», «Краска порошковая», «Болт М8».</li>
+                    <li>Создайте спецификацию на «Изделие А»: Сталь — 2 кг, Краска — 0,3 кг, Болт — 4 шт.</li>
+                </ol>
+            </div>
+            <div class="self-check">
+                <strong>Самопроверка:</strong> откройте спецификацию и убедитесь, что все три материала сохранены с нужным количеством.
+            </div>
+
+            <h4>Дополнительные материалы</h4>
+            <div class="resources">
+                <a href="https://rutube.ru/video/ba0938472930f74bfa55bf39efc974e4/" class="video-link" target="_blank">Видео-урок: настройки параметров учёта, функциональности, ввод данных об организации (rutube.ru)</a>
+                <a href="https://www.arenda1c.ru/instrukcii-po-1s/1s-buhgalteriya/speczifikacziya-gotovoj-produkczii.html" class="article-link" target="_blank">Статья со скриншотами: спецификация готовой продукции (arenda1c.ru)</a>
+            </div>
+        </div>
+
+        <div class="module">
+            <h2>МОДУЛЬ 3. Поступление материалов (учимся оформлять)</h2>
+
+            <h3>3.1. Пошаговая инструкция: поступление от поставщика</h3>
+            <ol>
+                <li>Раздел <strong>«Покупки»</strong> → <strong>«Поступление (акты, накладные, УПД)»</strong>.</li>
+                <li>Нажмите <strong>«Поступление»</strong> → выберите <strong>«Товары (накладная, УПД)»</strong>.</li>
+                <li>Заполните: организацию, поставщика, склад, номер и дату накладной поставщика.</li>
+                <li>В табличной части добавьте материалы: количество, цена, ставка НДС.</li>
+                <li>Нажмите <strong>«Провести»</strong>.</li>
+            </ol>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://topkoder.ru/wp-content/uploads/2025/11/Postuplenie-akty-nakladnye-UPD-1024x521.png" alt="Раздел Покупки — Поступление (акты, накладные, УПД) в 1С" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Раздел «Покупки» → «Поступление (акты, накладные, УПД)» · Скриншот: <a href="https://topkoder.ru/stati/uchet-tmc-v-1s-buhgalteriya-predpriyatiya/" target="_blank">topkoder.ru</a></figcaption>
+            </figure>
+
+            <p><strong>Что должно получиться (проводки):</strong></p>
+            <ul>
+                <li><code>Дт 10.01 Кт 60.01</code> — материалы оприходованы;</li>
+                <li><code>Дт 19.03 Кт 60.01</code> — отражен входной НДС.</li>
+            </ul>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://topkoder.ru/wp-content/uploads/2025/11/Forma-Dvizhenij-dokumenta-1024x586.png" alt="Проводки документа поступления: Дт 10.01 Кт 60.01 и Дт 19.03 Кт 60.01" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Движения документа поступления (кнопка «Дт/Кт»): материалы на 10.01, НДС на 19.03 · Скриншот: <a href="https://topkoder.ru/stati/uchet-tmc-v-1s-buhgalteriya-predpriyatiya/" target="_blank">topkoder.ru</a></figcaption>
+            </figure>
+
+            <h3>3.2. Как включить доставку в стоимость материалов</h3>
+            <p>Если поставщик выставил отдельно транспортные расходы, создайте документ <strong>«Поступление доп. расходов»</strong> (раздел «Покупки» или кнопка «Создать на основании» из документа поступления).</p>
+            <ul>
+                <li>Укажите контрагента-перевозчика, сумму.</li>
+                <li>Выберите способ распределения: <strong>«По сумме»</strong> (проще всего; также доступны «По количеству» и «По весу»).</li>
+                <li>На вкладке «Товары» отметьте материалы, в стоимость которых включается доставка.</li>
+                <li>Проведите.</li>
+            </ul>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://topkoder.ru/wp-content/uploads/2025/11/Postuplenie-dop.-rashodov-1024x485.png" alt="Документ Поступление доп. расходов в 1С" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Документ «Поступление доп. расходов» — так ТЗР попадают в стоимость материалов · Скриншот: <a href="https://topkoder.ru/stati/uchet-tmc-v-1s-buhgalteriya-predpriyatiya/" target="_blank">topkoder.ru</a></figcaption>
+            </figure>
+
+            <div class="self-check">
+                <strong>Самопроверка:</strong> откройте ОСВ по счету 10.01 и убедитесь, что стоимость материалов увеличилась на сумму доставки.
+            </div>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://topkoder.ru/wp-content/uploads/2025/11/OSV-po-schetu-10.01-1024x383.png" alt="ОСВ по счету 10.01 после распределения ТЗР" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">ОСВ по счёту 10.01: себестоимость материалов увеличилась на сумму доставки · Скриншот: <a href="https://topkoder.ru/stati/uchet-tmc-v-1s-buhgalteriya-predpriyatiya/" target="_blank">topkoder.ru</a></figcaption>
+            </figure>
+
+            <div class="task">
+                <h4>📝 Задание 3.1 (сквозной кейс, шаг 1)</h4>
+                <p>Оформите в 1С:</p>
+                <ul>
+                    <li>Поступление от ООО «Металлобаза»: Сталь — 100 кг × 500 ₽, Краска — 20 кг × 800 ₽, Болт — 200 шт. × 15 ₽.</li>
+                    <li>Доставку от ООО «ТрансЛогистик» на 6 000 ₽ распределите по сумме.</li>
+                </ul>
+                <p><em>Подсказка:</em> проверить себя можно <a href="tmc_calculator.html">калькулятором распределения ТЗР</a> — в нём уже загружен этот пример.</p>
+            </div>
+            <div class="self-check">
+                <strong>Самопроверка:</strong> проверьте проводки и убедитесь, что стоимость стали выросла пропорционально.
+            </div>
+
+            <h4>Дополнительные материалы</h4>
+            <div class="resources">
+                <a href="https://topkoder.ru/stati/uchet-tmc-v-1s-buhgalteriya-predpriyatiya/" class="article-link" target="_blank">Статья со скриншотами: учёт ТМЦ в 1С:Бухгалтерия предприятия — поступление и списание (topkoder.ru)</a>
+                <a href="https://baranovichi.1cbit.by/blog/uchet-tmts-v-1s-8-3-poshagovaya-instruktsiya/" class="article-link" target="_blank">Статья со скриншотами: учёт ТМЦ в 1С 8.3, пошаговая инструкция (1cbit.by)</a>
+            </div>
+        </div>
+
+        <div class="module">
+            <h2>МОДУЛЬ 4. Списание в производство и выпуск продукции (самое важное)</h2>
+
+            <h3>4.1. Два способа списать материалы</h3>
+            <ul>
+                <li><strong>Способ 1. Расход материалов (требование-накладная)</strong> — когда вы точно знаете, сколько материалов ушло в цех, но выпуск еще не оформлен (или материалы ушли на общехозяйственные нужды).</li>
+                <li><strong>Способ 2. Отчет производства за смену</strong> — когда вы одновременно списываете материалы по спецификации и приходуете готовую продукцию.</li>
+            </ul>
+
+            <h3>4.2. Пошагово: списание документом «Расход материалов»</h3>
+            <ol>
+                <li>Раздел <strong>«Производство»</strong> → <strong>«Расход материалов (требования-накладные)»</strong> (тот же журнал есть и в разделе «Склад»).</li>
+                <li>Укажите подразделение-получатель (цех), склад-отправитель.</li>
+                <li>В табличной части добавьте материалы и количество.</li>
+                <li>По ссылке <strong>«Счет затрат»</strong> укажите: счет <strong>20.01</strong> (основное производство), подразделение, номенклатурную группу (например, «Изделие А»), статью затрат.</li>
+                <li>Проведите.</li>
+            </ol>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://topkoder.ru/wp-content/uploads/2025/11/Scheta-zatrat-1024x481.png" alt="Форма Счета затрат в документе Расход материалов" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Форма «Счета затрат»: счёт 20.01, подразделение, номенклатурная группа, статья затрат · Скриншот: <a href="https://topkoder.ru/stati/uchet-tmc-v-1s-buhgalteriya-predpriyatiya/" target="_blank">topkoder.ru</a></figcaption>
+            </figure>
+
+            <p><strong>Проводка:</strong> <code>Дт 20.01 Кт 10.01</code> — материалы списаны в производство.</p>
+
+            <h3>4.3. Пошагово: выпуск продукции отчетом производства за смену</h3>
+            <ol>
+                <li>Раздел <strong>«Производство»</strong> → <strong>«Выпуск продукции (Отчеты производства за смену)»</strong> → <strong>«Создать»</strong> → «Отчет производства за смену».</li>
+                <li>Укажите подразделение, склад готовой продукции, счет затрат (20.01).</li>
+                <li>На вкладке <strong>«Продукция»</strong> добавьте «Изделие А», количество выпуска и <strong>спецификацию</strong>.</li>
+                <li>На вкладке «Материалы» нажмите <strong>«Заполнить»</strong> — 1С сама рассчитает количество материалов по спецификации.</li>
+                <li>Проведите.</li>
+            </ol>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://topkoder.ru/wp-content/uploads/2025/11/Dokument-Vypusk-produkcii-1024x416.png" alt="Документ Отчет производства за смену (Выпуск продукции) в 1С" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Документ выпуска продукции: на вкладке «Материалы» состав списывается по спецификации · Скриншот: <a href="https://topkoder.ru/stati/uchet-tmc-v-1s-buhgalteriya-predpriyatiya/" target="_blank">topkoder.ru</a></figcaption>
+            </figure>
+
+            <p><strong>Проводки:</strong></p>
+            <ul>
+                <li><code>Дт 20.01 Кт 10.01</code> — материалы списаны;</li>
+                <li><code>Дт 43 Кт 20.01</code> — готовая продукция оприходована.</li>
+            </ul>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://topkoder.ru/wp-content/uploads/2025/11/Dokument-dvizheniya-i-provodki-1024x424.png" alt="Проводки отчета производства за смену" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Движения отчёта производства: Дт 43 Кт 20.01 (выпуск) и Дт 20.01 Кт 10.01 (списание материалов) · Скриншот: <a href="https://topkoder.ru/stati/uchet-tmc-v-1s-buhgalteriya-predpriyatiya/" target="_blank">topkoder.ru</a></figcaption>
+            </figure>
+
+            <div class="task">
+                <h4>📝 Задание 4.1 (сквозной кейс, шаг 2)</h4>
+                <ol>
+                    <li>Выпустите 50 шт. «Изделия А» через отчет производства за смену.</li>
+                    <li>Убедитесь, что 1С автоматически списала: Сталь — 100 кг, Краска — 15 кг, Болт — 200 шт.</li>
+                    <li>Проверьте проводки: <code>Дт 20.01 Кт 10.01</code> (списание) и <code>Дт 43 Кт 20.01</code> (выпуск).</li>
+                    <li>Дополнительно оформите «Расход материалов» на списание 2 кг краски на общехозяйственные нужды (счет 26).</li>
+                </ol>
+            </div>
+            <div class="self-check">
+                <strong>Самопроверка:</strong> откройте ОСВ по счету 10.01 — остатки должны соответствовать тому, что осталось после списания.
+            </div>
+
+            <h4>Дополнительные материалы</h4>
+            <div class="resources">
+                <a href="https://buh.ru/video/1s-bukhgalteriya-8-red-3-0-kak-v-odnom-dokumente-spisyvat-materialy-na-raznye-tseli-video.html" class="video-link" target="_blank">Видео: как в одном документе списывать материалы на разные цели (buh.ru)</a>
+                <a href="https://4dk-soft.ru/articles/main/raskhod-materialov-trebovaniya-nakladnye-v-1s-bukhgalteriya-chto-za-dokument-i-dlya-chego-on-nuzhen/" class="article-link" target="_blank">Статья со скриншотами: расход материалов (требования-накладные) в 1С:Бухгалтерии (4dk-soft.ru)</a>
+                <a href="https://www.4dk.ru/content/art/35302-1c-kak-otrazit-rashod-materialov-v-programme-1sbuhgalteriya-20240423" class="article-link" target="_blank">Статья со скриншотами: как отразить расход материалов и отчёт производства (4dk.ru)</a>
+            </div>
+        </div>
+
+        <div class="module">
+            <h2>МОДУЛЬ 5. Инвентаризация и закрытие месяца</h2>
+
+            <h3>5.1. Инвентаризация: пошагово</h3>
+            <ol>
+                <li>Раздел <strong>«Склад»</strong> → <strong>«Инвентаризация товаров»</strong> → <strong>«Создать»</strong>.</li>
+                <li>Укажите дату, склад, материально-ответственное лицо.</li>
+                <li>Нажмите <strong>«Заполнить»</strong> → <strong>«Заполнить по остаткам на складе»</strong>.</li>
+                <li>Внесите <strong>фактическое количество</strong> (то, что вы якобы пересчитали).</li>
+                <li>Если есть расхождения:
+                    <ul>
+                        <li>излишек → создайте документ <strong>«Оприходование товаров»</strong> (Дт 10 Кт 91.01);</li>
+                        <li>недостача → создайте документ <strong>«Списание товаров»</strong> (<code>Дт 94 Кт 10</code>).</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://scloud.ru/upload/medialibrary/0b6/cvu1k0z8hzqutps4uodb82cga0qf8nj6.png" alt="Раздел Склад — Инвентаризация товаров в 1С:Бухгалтерии" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Раздел «Склад» → «Инвентаризация товаров» · Скриншот: <a href="https://scloud.ru/ask_question/uchet-tmts-skladskie-operatsii-/kak-sdelat-inventarizatsiyu-v-1s-8-3-bukhgalteriya-3-0/" target="_blank">scloud.ru</a></figcaption>
+            </figure>
+
+            <figure style="margin: 20px 0 25px;">
+                <img src="https://scloud.ru/upload/medialibrary/f22/b5h1jccjuv3q5og6tlorlouzb30ppzti.png" alt="Документ Инвентаризация товаров: кнопка Заполнить по остаткам на складе" loading="lazy" style="max-width: 100%; height: auto; border: 1px solid #d4d2c9; display: block;">
+                <figcaption style="font-size: 0.8rem; color: #888; margin-top: 6px;">Документ «Инвентаризация товаров»: «Заполнить» → «Заполнить по остаткам на складе» · Скриншот: <a href="https://scloud.ru/ask_question/uchet-tmts-skladskie-operatsii-/kak-sdelat-inventarizatsiyu-v-1s-8-3-bukhgalteriya-3-0/" target="_blank">scloud.ru</a></figcaption>
+            </figure>
+
+            <p><strong>Полезно знать:</strong> если при инвентаризации обнаружилась <em>пересортица</em> (недостача одного товара и излишек другого того же вида), то начиная с версии 3.0.156 в «1С:Бухгалтерии 8» есть отдельный документ <strong>«Пересортица товаров»</strong> (раздел «Склад» → «Инвентаризация»), который упрощает взаимозачёт. Подробнее — в <a href="https://buh.ru/articles/uproshchenie-ucheta-peresortitsy-v-1s-bukhgalterii-8.html" target="_blank">статье экспертов 1С</a>.</p>
+
+            <h3>5.2. Закрытие месяца: что проверить</h3>
+            <ol>
+                <li><strong>Отрицательные остатки.</strong> Откройте ОСВ по счету 10.01. Если по какому-то материалу количество отрицательное — вы списали больше, чем есть. Найдите ошибку до закрытия месяца.</li>
+                <li><strong>Расчет себестоимости.</strong> Выполните регламентную операцию «Закрытие месяца» (раздел «Операции» → «Закрытие месяца»). При оценке «по средней» 1С доведёт стоимость списаний до взвешенной средней операцией «Корректировка стоимости номенклатуры» и рассчитает себестоимость выпуска.</li>
+                <li><strong>Сверка со складом.</strong> Сформируйте отчет «Ведомость по партиям товаров на складах» и сравните с данными склада.</li>
+            </ol>
+
+            <div class="task">
+                <h4>📝 Задание 5.1 (сквозной кейс, шаг 3)</h4>
+                <ol>
+                    <li>Проведите инвентаризацию на складе материалов.</li>
+                    <li>По результатам: стали фактически на 18 кг больше учетного остатка (излишек), краски — на 1 кг меньше (недостача).</li>
+                    <li>Оформите оприходование излишка стали и списание недостачи краски.</li>
+                    <li>Сформируйте ОСВ по счету 10.01 и убедитесь, что отрицательных остатков нет.</li>
+                </ol>
+            </div>
+            <div class="self-check">
+                <strong>Самопроверка:</strong> после закрытия месяца откройте «Анализ счета 20» и проверьте, что затраты собраны по подразделению и номенклатурной группе.
+            </div>
+
+            <h4>Дополнительные материалы</h4>
+            <div class="resources">
+                <a href="https://rutube.ru/video/b25c4808d950a8a5ba3e5d2c5755cac0/" class="video-link" target="_blank">Видео: выпуск и продажа продукции, прямые и косвенные расходы, закрытие месяца (rutube.ru)</a>
+                <a href="https://scloud.ru/ask_question/uchet-tmts-skladskie-operatsii-/kak-sdelat-inventarizatsiyu-v-1s-8-3-bukhgalteriya-3-0/" class="article-link" target="_blank">Статья со скриншотами: инвентаризация в 1С:Бухгалтерии 3.0 (scloud.ru)</a>
+                <a href="https://buh.ru/articles/uproshchenie-ucheta-peresortitsy-v-1s-bukhgalterii-8.html" class="article-link" target="_blank">Статья экспертов 1С: упрощение учёта пересортицы (buh.ru)</a>
+            </div>
+        </div>
+
+        <!-- Добавил id="checklists", чтобы работала вторая карточка из каталога -->
+        <div class="module" id="checklists">
+            <h2>ЧЕК-ЛИСТЫ ДЛЯ ЕЖЕДНЕВНОЙ РАБОТЫ</h2>
+            <div class="checklist">
+                <h3>Чек-лист 1. Поступление материалов</h3>
+                <ul>
+                    <li>Создан документ «Поступление (акты, накладные, УПД)»</li>
+                    <li>Заполнены организация, поставщик, склад, договор</li>
+                    <li>В табличной части указаны материалы, количество, цена, НДС</li>
+                    <li>Документ проведен, проверены проводки (Дт 10.01 Кт 60.01)</li>
+                    <li>При наличии транспортных расходов создан документ «Поступление доп. расходов»</li>
+                    <li>Проверено, что стоимость материалов увеличилась на сумму ТЗР</li>
+                </ul>
+                <h3>Чек-лист 2. Списание в производство</h3>
+                <ul>
+                    <li>Создан документ «Расход материалов» или «Отчет производства за смену»</li>
+                    <li>Указано подразделение-получатель (цех)</li>
+                    <li>Заполнена форма «Счет затрат»: счет 20.01, подразделение, номенклатурная группа, статья затрат</li>
+                    <li>Количество материалов соответствует фактическому расходу (или спецификации)</li>
+                    <li>Документ проведен, проверена проводка Дт 20.01 Кт 10.01</li>
+                    <li>Нет отрицательных остатков по списанным материалам</li>
+                </ul>
+                <h3>Чек-лист 3. Закрытие месяца по участку ТМЦ</h3>
+                <ul>
+                    <li>Проведена инвентаризация (если требуется по графику)</li>
+                    <li>Оформлены оприходования излишков и списания недостач</li>
+                    <li>Выполнены регламентные операции: корректировка стоимости номенклатуры, расчет себестоимости</li>
+                    <li>Проверены отрицательные остатки по счетам 10, 20, 43</li>
+                    <li>Сформирована ОСВ по счету 10, проведена сверка с данными склада</li>
+                    <li>Проверена себестоимость выпущенной продукции (счет 43)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="plan">
+            <h2>ПЛАН ВАШИХ ДЕЙСТВИЙ НА БЛИЖАЙШИЕ ДНИ</h2>
+            <ol>
+                <li><strong>Сегодня:</strong> прочитайте модуль 1 и выполните задание 1.1 (устно).</li>
+                <li><strong>Завтра:</strong> настройте 1С по модулю 2 и создайте справочники (задание 2.1).</li>
+                <li><strong>День 3–4:</strong> оформите поступление и доставку (задание 3.1).</li>
+                <li><strong>День 5–6:</strong> сделайте списание и выпуск (задание 4.1).</li>
+                <li><strong>День 7:</strong> проведите инвентаризацию и закройте месяц (задание 5.1).</li>
+                <li><strong>День 8:</strong> пройдите <a href="tmc_test.html">итоговый тест</a>, проверьте себя по чек-листам.</li>
+            </ol>
+        </div>
+        
+        <footer class="footer">
+            <div><strong>КУРС ТМЦ</strong> · учебный материал · факты и ссылки проверены 16.11.2026</div>
+            <div><a href="index.html">Вернуться в каталог</a></div>
+        </footer>
+
+    </div>
+</body>
+</html>
