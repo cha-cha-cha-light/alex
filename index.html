@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог материалов · 1С:Бухгалтерия 8.3</title>
+    <style>
+        /* ============================================
+           ДИЗАЙН-ТОКЕНЫ PAKET27.RU
+           ============================================ */
+        :root {
+            --p-paper: #f3f1e9;
+            --p-paper-2: #ebe9e0;
+            --p-ink: #242320;
+            --p-muted: #71716a;
+            --p-line: #cfcec6;
+            --p-line-input: #b8b7ae;
+            --p-orange: #f14a24;
+            --p-orange-text: #c23a1a;
+            --p-white: #ffffff;
+
+            --color-bg: var(--p-paper);
+            --color-text: var(--p-ink);
+            --color-text-muted: var(--p-muted);
+            --color-border: var(--p-line);
+            --color-border-strong: var(--p-line-input);
+            --color-accent: var(--p-orange);
+            --color-accent-text: var(--p-orange-text);
+            --color-surface: var(--p-paper-2);
+
+            --font-display: 'PrintDisplay', 'Arial Black', 'Helvetica Neue', sans-serif;
+            --font-text: 'PrintText', 'DejaVu Sans Condensed', 'Arial Narrow', sans-serif;
+
+            --fs-h1: clamp(2.2rem, 5vw, 4rem);
+            --fs-h2: clamp(1.4rem, 3vw, 2rem);
+            --fs-h3: clamp(1.1rem, 2vw, 1.35rem);
+            --fs-body: 1rem;
+            --fs-small: 0.85rem;
+            --fs-tiny: 0.7rem;
+
+            --radius: 0;
+            --shadow-print: 0 14px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ============================================
+           БАЗА
+           ============================================ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 30px;
+        }
+
+        body {
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-text);
+            font-size: var(--fs-body);
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+            padding: 0 4.5%;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        a {
+            color: var(--color-accent-text);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        a:hover {
+            border-bottom-color: var(--color-accent-text);
+        }
+
+        code {
+            font-family: 'DejaVu Sans Mono', 'Consolas', monospace;
+            font-size: 0.85em;
+            background: var(--color-surface);
+            padding: 2px 6px;
+            border: 1px solid var(--color-border);
+        }
+
+        /* ============================================
+           ШАПКА
+           ============================================ */
+        .header {
+            padding: 26px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            border-bottom: 1px solid var(--color-text);
+            margin-bottom: 60px;
+        }
+
+        .wordmark {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            white-space: nowrap;
+        }
+
+        .wordmark > span {
+            display: inline-block;
+            background: var(--color-accent);
+            color: var(--color-text);
+            padding: 3px 6px;
+            margin-left: 3px;
+            transform: rotate(-7deg);
+            font-size: 1.3rem;
+            letter-spacing: -0.06em;
+        }
+
+        .wordmark i {
+            display: block;
+            font-family: var(--font-text);
+            font-style: normal;
+            font-size: var(--fs-tiny);
+            letter-spacing: 1.7px;
+            margin-top: 8px;
+            color: var(--color-text-muted);
+        }
+
+        .header-contact {
+            font-size: var(--fs-small);
+            border-bottom: 1px solid var(--color-text);
+            padding-bottom: 6px;
+        }
+
+        .header-contact span {
+            margin-left: 25px;
+            font-size: 1.2rem;
+        }
+
+        /* ============================================
+           КОНТЕЙНЕР
+           ============================================ */
+        .page-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+        }
+
+        /* ============================================
+           HERO
+           ============================================ */
+        .hero {
+            margin-bottom: 60px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            font-size: var(--fs-tiny);
+            letter-spacing: 2px;
+            font-weight: 700;
+            padding: 6px 12px;
+            background: var(--color-text);
+            color: var(--p-paper);
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: var(--fs-h1);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            color: var(--color-accent-text);
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--color-text-muted);
+            max-width: 620px;
+        }
+
+        /* ============================================
+           КАТАЛОГ
+           ============================================ */
+        .catalog-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--color-text);
+        }
+
+        .catalog-header h2 {
+            font-size: var(--fs-h2);
+        }
+
+        .catalog-count {
+            font-size: var(--fs-small);
+            color: var(--color-text-muted);
+            font-family: 'DejaVu Sans Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        /* ============================================
+           КАРТОЧКА
+           ============================================ */
+        .card {
+            display: flex;
+            flex-direction: column;
+            background: var(--p-white);
+            border: 1px solid var(--color-border-strong);
+            padding: 28px 25px;
+            text-decoration: none;
+            color: var(--color-text);
+            border-bottom-color: var(--color-border-strong);
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            min-height: 220px;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--color-text);
+            box-shadow: var(--shadow-print);
+        }
+
+        .card-num {
+            position: absolute;
+            top: 20px;
+            right: 22px;
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-border);
+            line-height: 1;
+            letter-spacing: -0.05em;
+            transition: color 0.2s;
+        }
+
+        .card:hover .card-num {
+            color: var(--color-accent);
+        }
+
+        .card-tag {
+            display: inline-block;
+            font-size: var(--fs-tiny);
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            padding: 4px 9px;
+            background: var(--color-surface);
+            color: var(--color-text-muted);
+            align-self: flex-start;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+
+        .card:hover .card-tag {
+            background: var(--color-accent);
+            color: var(--color-text);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: var(--fs-h3);
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+            padding-right: 40px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .card-cta {
+            font-size: var(--fs-small);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--color-text);
+            border-top: 1px solid var(--color-border);
+            padding-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .card:hover .card-cta {
+            color: var(--color-accent-text);
+            border-top-color: var(--color-accent);
+        }
+
+        .card-cta span {
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .card:hover .card-cta span {
+            transform: translateX(5px);
+        }
+
+        /* Пустое состояние */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            border: 2px dashed var(--color-border);
+            color: var(--color-text-muted);
+        }
+
+        .empty-state p {
+            margin-bottom: 10px;
+        }
+
+        /* ============================================
+           БЛОК ИНСТРУКЦИИ
+           ============================================ */
+        .add-section {
+            background: var(--color-text);
+            color: var(--p-paper);
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .add-section h2 {
+            color: var(--p-paper);
+            font-size: var(--fs-h2);
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--color-accent);
+        }
+
+        .add-section p {
+            color: #d4d2c9;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .add-section strong {
+            color: var(--p-paper);
+        }
+
+        .add-section code {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--color-accent);
+            padding: 2px 6px;
+        }
+
+        details {
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0;
+        }
+
+        details[open] {
+            padding: 20px;
+        }
+
+        summary {
+            cursor: pointer;
+            padding: 15px 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            color: var(--color-accent);
+            user-select: none;
+            list-style: none;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::before {
+            content: "▸ ";
+            display: inline-block;
+            margin-right: 8px;
+            transition: transform 0.2s;
+        }
+
+        details[open] summary::before {
+            content: "▾ ";
+        }
+
+        details[open] summary {
+            margin-bottom: 15px;
+        }
+
+        .code-block {
+            background: #1a1916;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'DejaVu Sans Mono', 'Consolas', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: #d4d2c9;
+            margin-top: 15px;
+            white-space: pre;
+        }
+
+        .code-block .kw { color: #f1a565; }
+        .code-block .str { color: #97c087; }
+        .code-block .com { color: #6a6862; font-style: italic; }
+        .code-block .prop { color: #8bb2dc; }
+
+        /* ============================================
+           ФУТЕР
+           ============================================ */
+        .footer {
+            border-top: 1px solid var(--color-text);
+            padding: 25px 0;
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: var(--fs-small);
+            color: var(--color-text-muted);
+        }
+
+        .footer strong {
+            color: var(--color-text);
+        }
+
+        /* ============================================
+           АДАПТИВ
+           ============================================ */
+        @media (max-width: 700px) {
+            body { padding: 0 4%; }
+            .header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 40px; }
+            .hero { margin-bottom: 40px; }
+            .add-section { padding: 25px 20px; }
+            .card { padding: 22px 20px; min-height: auto; }
+            .footer { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ШАПКА -->
+    <header class="header">
+        <div class="wordmark">
+            КУРС<span>ТМЦ</span>
+            <i>1С:БУХГАЛТЕРИЯ 8.3</i>
+        </div>
+        <div class="header-contact">
+            КАТАЛОГ МАТЕРИАЛОВ <span>→</span>
+        </div>
+    </header>
+
+    <div class="page-wrap">
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-tag">УЧЕБНЫЙ АРХИВ</div>
+            <h1>Материалы<br>по учету <em>ТМЦ</em><br>на производстве</h1>
+            <p class="hero-desc">
+                Все страницы курса в одном месте. Открывайте нужный модуль,
+                возвращайтесь к чек-листам, проходите тесты — и добавляйте новые материалы по мере необходимости.
+            </p>
+        </section>
+
+        <!-- КАТАЛОГ -->
+        <section>
+            <div class="catalog-header">
+                <h2>Все материалы</h2>
+                <div class="catalog-count" id="catalogCount">—</div>
+            </div>
+
+            <div class="grid" id="grid">
+                <!-- Карточки рендерятся из JS -->
+            </div>
+        </section>
+
+        <!-- ИНСТРУКЦИЯ ПО ДОБАВЛЕНИЮ -->
+        <section class="add-section">
+            <h2>Как добавить новый материал</h2>
+            <p>
+                Этот сайт — статический. Чтобы добавить новую страницу в каталог,
+                откройте файл <code>index.html</code> в любом редакторе (Notepad++, VS Code, Sublime),
+                найдите в самом низу блок <code>const materials = [...]</code> и скопируйте одну строку-объект.
+            </p>
+            <p>
+                <strong>Шаг 1.</strong> Положите новую страницу (например, <code>test.html</code>) в ту же папку, где лежит <code>index.html</code>.<br>
+                <strong>Шаг 2.</strong> Добавьте в массив <code>materials</code> новую запись.<br>
+                <strong>Шаг 3.</strong> Сохраните файл, обновите браузер — карточка появится сама.
+            </p>
+
+            <details>
+                <summary>Показать код, который нужно скопировать</summary>
+                <p>Скопируйте этот блок целиком и вставьте его <strong>перед закрывающей скобкой</strong> массива:</p>
+                <div class="code-block"><span class="com">// Скопируйте этот блок ↓ и вставьте его перед последней "];"</span>
+{
+    <span class="prop">num</span>:   <span class="str">"03"</span>,
+    <span class="prop">tag</span>:   <span class="str">"ТЕСТ"</span>,
+    <span class="prop">title</span>: <span class="str">"Итоговый тест по ТМЦ"</span>,
+    <span class="prop">desc</span>:  <span class="str">"20 вопросов для самопроверки после прохождения курса"</span>,
+    <span class="prop">url</span>:   <span class="str">"test.html"</span>
+},</div>
+                <p style="margin-top: 15px;">
+                    <strong>Что менять:</strong>
+                    <code>num</code> — порядковый номер (01, 02, 03…),
+                    <code>tag</code> — короткая метка категории,
+                    <code>title</code> — название,
+                    <code>desc</code> — описание в одну строку,
+                    <code>url</code> — имя файла страницы (без пробелов, латиницей).
+                </p>
+                <p style="margin-top: 10px;">
+                    Номера идут подряд — если добавили материал посередине, не забудьте сдвинуть номера у следующих карточек (или просто ставьте любые — это визуальная метка, а не строгий порядок).
+                </p>
+            </details>
+        </section>
+
+        <!-- ФУТЕР -->
+        <footer class="footer">
+            <div><strong>КУРС ТМЦ</strong> · учебный каталог</div>
+            <div>GitHub Pages · статический сайт</div>
+        </footer>
+
+    </div>
+
+    <script>
+        /* ============================================================
+           ⬇⬇⬇  РЕДАКТИРУЙТЕ ТОЛЬКО ЭТОТ МАССИВ  ⬇⬇⬇
+           ============================================================
+           Чтобы добавить новый материал, скопируйте один блок
+           (открывающая { до закрывающей },) и вставьте его перед
+           последней квадратной скобкой ]; в конце списка.
+           ============================================================ */
+
+        const materials = [
+            {
+                num:   "01",
+                tag:   "КУРС",
+                title: "Полный курс по учету ТМЦ на производстве",
+                desc:  "От ФСБУ 5/2019 до закрытия месяца в 1С:Бухгалтерия 8.3. 5 модулей, сквозной кейс, тест и чек-листы.",
+                url:   "course-tmc.html"
+            },
+            {
+                num:   "02",
+                tag:   "ШПАРГАЛКА",
+                title: "Чек-листы для ежедневной работы",
+                desc:  "Поступление, списание в производство, закрытие месяца — три коротких списка на каждый день.",
+                url:   "course-tmc.html#checklists"
+            }
+            // ⬇⬇⬇ ВСТАВЛЯЙТЕ НОВЫЕ МАТЕРИАЛЫ СЮДА ⬇⬇⬇
+            // {
+            //     num:   "03",
+            //     tag:   "ТЕСТ",
+            //     title: "Название страницы",
+            //     desc:  "Короткое описание — одна-две строки.",
+            //     url:   "имя-файла.html"
+            // },
+        ];
+
+        /* ============================================================
+           ⬆⬆⬆  ДАЛЬШЕ МОЖНО НЕ ТРОГАТЬ  ⬆⬆⬆
+           ============================================================ */
+
+        (function render() {
+            const grid = document.getElementById('grid');
+            const count = document.getElementById('catalogCount');
+
+            if (!materials.length) {
+                grid.innerHTML = '<div class="empty-state"><p>Пока нет ни одного материала.</p><p>Добавьте первый в массив <code>materials</code>.</p></div>';
+                count.textContent = '0 материалов';
+                return;
+            }
+
+            const cardsHtml = materials.map(item => `
+                <a class="card" href="${item.url}">
+                    <span class="card-num">${item.num}</span>
+                    <span class="card-tag">${item.tag}</span>
+                    <h3 class="card-title">${item.title}</h3>
+                    <p class="card-desc">${item.desc}</p>
+                    <div class="card-cta">Открыть <span>→</span></div>
+                </a>
+            `).join('');
+
+            grid.innerHTML = cardsHtml;
+
+            const word = materials.length === 1 ? 'материал'
+                       : materials.length < 5 ? 'материала'
+                       : 'материалов';
+            count.textContent = `${materials.length} ${word}`;
+        })();
+    </script>
+
+</body>
+</html>
