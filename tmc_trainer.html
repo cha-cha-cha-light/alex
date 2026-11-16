@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажёр: собери проводку по учёту ТМЦ</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .trainer-card {
+            background: var(--p-white);
+            border: 1px solid var(--color-border);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .trainer-operation {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        .trainer-fields {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .trainer-field {
+            flex: 1;
+            min-width: 200px;
+        }
+        .trainer-field label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            color: var(--color-text-muted);
+        }
+        .trainer-field select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            font-family: 'DejaVu Sans Mono', monospace;
+            border: 2px solid var(--color-border-strong);
+            background: var(--p-white);
+            color: var(--color-text);
+            cursor: pointer;
+        }
+        .trainer-field select:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+        .trainer-field select.correct { border-color: #4caf50; background: #e8f5e9; }
+        .trainer-field select.incorrect { border-color: #f44336; background: #ffebee; }
+        .trainer-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .btn-check {
+            background: var(--color-text);
+            color: var(--p-paper);
+            border: none;
+            padding: 12px 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-check:hover { background: var(--color-accent); color: var(--color-text); }
+        .btn-next {
+            background: transparent;
+            color: var(--color-text);
+            border: 2px solid var(--color-text);
+            padding: 10px 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+        .btn-next:hover { background: var(--color-text); color: var(--p-paper); }
+        .trainer-feedback {
+            margin-top: 15px;
+            padding: 15px 20px;
+            border-left: 4px solid var(--color-accent);
+            background: var(--color-surface);
+            font-size: 0.92rem;
+            display: none;
+        }
+        .trainer-feedback.show { display: block; }
+        .trainer-feedback.correct { border-left-color: #4caf50; }
+        .trainer-feedback.incorrect { border-left-color: #f44336; }
+        .trainer-progress {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'DejaVu Sans Mono', monospace;
+            margin-bottom: 15px;
+        }
+        .trainer-score {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="wordmark">КУРС<span>ТМЦ</span><i>1С:БУХГАЛТЕРИЯ 8.3</i></a>
+        <div class="header-nav"><a href="index.html">← В КАТАЛОГ</a></div>
+    </header>
+
+    <div class="course-wrap">
+
+        <h1>Тренажёр:<br>собери проводку</h1>
+
+        <div class="course-info">
+            <p><strong>Как играть:</strong> прочитайте операцию, выберите правильные счёт Дебета и счёт Кредита из выпадающих списков. Нажмите «Проверить». Если верно — переходите к следующей операции.</p>
+            <p><strong>Цель:</strong> закрепить «скелет проводок» из Модуля 2. 10 операций — базовый минимум, который должен быть на автомате.</p>
+        </div>
+
+        <div class="trainer-progress" id="progressDisplay">Операция 1 из 10</div>
+
+        <div class="trainer-card" id="trainerCard">
+            <div class="trainer-operation" id="operationText">Загрузка...</div>
+            <div class="trainer-fields">
+                <div class="trainer-field">
+                    <label>Счёт Дебета</label>
+                    <select id="debitSelect">
+                        <option value="">— выберите —</option>
+                    </select>
+                </div>
+                <div class="trainer-field">
+                    <label>Счёт Кредита</label>
+                    <select id="creditSelect">
+                        <option value="">— выберите —</option>
+                    </select>
+                </div>
+            </div>
+            <div class="trainer-actions">
+                <button class="btn-check" id="checkBtn" onclick="checkAnswer()">Проверить</button>
+                <button class="btn-next" id="nextBtn" onclick="nextOperation()">Следующая →</button>
+                <span class="trainer-score" id="scoreDisplay"></span>
+            </div>
+            <div class="trainer-feedback" id="feedback"></div>
+        </div>
+
+        <div class="plan" style="margin-top: 40px;">
+            <h2>После тренажёра</h2>
+            <p>Если прошли все 10 операций без ошибок — переходите к <a href="tmc_test.html" style="color: var(--color-accent);">итоговому тесту</a>. Если были ошибки — вернитесь к <a href="tmc_deepseek.html#module2" style="color: var(--color-accent);">Модулю 2 «Скелет проводок»</a>.</p>
+        </div>
+
+        <footer class="footer">
+            <div><strong>КУРС ТМЦ</strong> · тренажёр проводок</div>
+            <div><a href="index.html">Вернуться в каталог</a></div>
+        </footer>
+    </div>
+
+    <script>
+        const operations = [
+            { text: "Поступление материалов от поставщика", debit: "10.01", credit: "60.01", explanation: "Материалы оприходованы по фактической стоимости." },
+            { text: "Выделен входной НДС по поступлению", debit: "19.03", credit: "60.01", explanation: "НДС учитывается на счёте 19 до принятия к вычету." },
+            { text: "Выдача материалов в цех на выпуск продукции", debit: "20.01", credit: "10.01", explanation: "Материалы списаны в основное производство." },
+            { text: "Выдача материалов на общецеховые нужды", debit: "25", credit: "10.01", explanation: "Общепроизводственные расходы (содержание цехов)." },
+            { text: "Выдача материалов на управленческие нужды", debit: "26", credit: "10.01", explanation: "Общехозяйственные расходы (управление, АУП)." },
+            { text: "Выпуск готовой продукции из производства", debit: "43", credit: "20.01", explanation: "Готовая продукция оприходована на склад." },
+            { text: "Излишки материалов при инвентаризации", debit: "10.01", credit: "91.01", explanation: "Излишки — прочие доходы." },
+            { text: "Недостача материалов при инвентаризации (до решения)", debit: "94", credit: "10.01", explanation: "Недостача отражается на счёте 94 до решения руководителя." },
+            { text: "Давальческое сырьё у переработчика (принято в переработку)", debit: "003", credit: "—", explanation: "Забалансовый счёт 003. Кредита нет — это забалансовая запись." },
+            { text: "Спецодежда выдана сотруднику", debit: "10.11.1", credit: "10.10", explanation: "Перевод со склада в эксплуатацию." }
+        ];
+
+        const allAccounts = ["10.01", "10.03", "10.07", "10.10", "10.11.1", "19.03", "20.01", "25", "26", "43", "60.01", "91.01", "94", "003", "—"];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        function populateSelects() {
+            const debitSelect = document.getElementById('debitSelect');
+            const creditSelect = document.getElementById('creditSelect');
+            debitSelect.innerHTML = '<option value="">— выберите —</option>';
+            creditSelect.innerHTML = '<option value="">— выберите —</option>';
+            allAccounts.forEach(acc => {
+                debitSelect.innerHTML += `<option value="${acc}">${acc}</option>`;
+                creditSelect.innerHTML += `<option value="${acc}">${acc}</option>`;
+            });
+        }
+
+        function loadOperation() {
+            answered = false;
+            const op = operations[currentIndex];
+            document.getElementById('operationText').textContent = op.text;
+            document.getElementById('progressDisplay').textContent = `Операция ${currentIndex + 1} из ${operations.length}`;
+            document.getElementById('debitSelect').value = '';
+            document.getElementById('creditSelect').value = '';
+            document.getElementById('debitSelect').className = '';
+            document.getElementById('creditSelect').className = '';
+            document.getElementById('feedback').className = 'trainer-feedback';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('checkBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('scoreDisplay').textContent = `Счёт: ${score}`;
+        }
+
+        function checkAnswer() {
+            if (answered) return;
+            const op = operations[currentIndex];
+            const debitSelect = document.getElementById('debitSelect');
+            const creditSelect = document.getElementById('creditSelect');
+            const selectedDebit = debitSelect.value;
+            const selectedCredit = creditSelect.value;
+
+            if (!selectedDebit || !selectedCredit) {
+                alert('Выберите оба счёта.');
+                return;
+            }
+
+            answered = true;
+            const isCorrect = (selectedDebit === op.debit && selectedCredit === op.credit);
+
+            debitSelect.classList.add(isCorrect ? 'correct' : 'incorrect');
+            creditSelect.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            const feedback = document.getElementById('feedback');
+            feedback.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+            feedback.innerHTML = isCorrect
+                ? `✅ <strong>Верно!</strong> ${op.explanation}`
+                : `❌ <strong>Неверно.</strong> Правильно: <code>Дт ${op.debit} — Кт ${op.credit}</code>. ${op.explanation}`;
+
+            if (isCorrect) score++;
+            document.getElementById('scoreDisplay').textContent = `Счёт: ${score}`;
+            document.getElementById('checkBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+
+            if (currentIndex === operations.length - 1) {
+                document.getElementById('nextBtn').textContent = 'Завершить';
+            }
+        }
+
+        function nextOperation() {
+            currentIndex++;
+            if (currentIndex >= operations.length) {
+                document.getElementById('trainerCard').innerHTML = `
+                    <div style="text-align: center; padding: 30px 0;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Тренажёр пройден!</h3>
+                        <p style="font-size: 2rem; font-weight: 700; color: var(--color-accent);">${score} / ${operations.length}</p>
+                        <p style="color: var(--color-text-muted); margin-top: 10px;">${score === operations.length ? 'Идеально! Переходите к итоговому тесту.' : 'Есть ошибки — повторите Модуль 2 и попробуйте снова.'}</p>
+                        <button class="btn-check" style="margin-top: 20px;" onclick="location.reload()">Пройти заново</button>
+                    </div>
+                `;
+                return;
+            }
+            loadOperation();
+        }
+
+        // Инициализация
+        populateSelects();
+        loadOperation();
+    </script>
+</body>
+</html>
