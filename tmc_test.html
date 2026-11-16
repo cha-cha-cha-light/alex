@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Итоговый тест: учёт ТМЦ в 1С</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .quiz-option { display: block; margin-bottom: 10px; padding: 12px 15px; background: var(--p-white); border: 1px solid var(--color-border); cursor: pointer; transition: all 0.2s; }
+        .quiz-option:hover { border-color: var(--color-text); }
+        .quiz-option input { margin-right: 10px; }
+        .quiz-option.selected { background: var(--color-surface); border-color: var(--color-text); }
+        .quiz-option.correct { background: #e8f5e9; border-color: #4caf50; }
+        .quiz-option.incorrect { background: #ffebee; border-color: #f44336; }
+        .quiz-feedback { margin-top: 10px; padding: 12px; border-left: 4px solid var(--color-accent); background: var(--color-surface); font-size: 0.9rem; display: none; }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { border-left-color: #4caf50; }
+        .quiz-feedback.incorrect { border-left-color: #f44336; }
+        .quiz-result { background: var(--color-text); color: var(--p-paper); padding: 30px; text-align: center; margin-top: 30px; }
+        .quiz-result h3 { color: var(--p-paper); border-bottom-color: var(--color-accent); }
+        .quiz-result .score { font-size: 3rem; font-weight: 700; color: var(--color-accent); margin: 10px 0; }
+        .quiz-result p { color: #d4d2c9; }
+        #submitBtn { background: var(--color-accent); color: var(--color-text); border: none; padding: 15px 40px; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: background 0.2s; }
+        #submitBtn:hover { background: var(--color-accent-text); color: var(--p-white); }
+        #submitBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="wordmark">КУРС<span>ТМЦ</span><i>1С:БУХГАЛТЕРИЯ 8.3</i></a>
+        <div class="header-nav"><a href="index.html">← В КАТАЛОГ</a></div>
+    </header>
+
+    <div class="course-wrap">
+        <h1>Итоговый тест:<br>проверьте себя</h1>
+        <div class="course-info">
+            <p><strong>Как проходить:</strong> выберите один вариант ответа в каждом вопросе. Нажмите «Проверить результат» в конце. Тест покажет ваш балл и правильные ответы с пояснениями.</p>
+            <p><strong>Критерии:</strong> 18–20 правильных — отлично; 15–17 — хорошо; 12–14 — удовлетворительно; меньше 12 — стоит повторить модули.</p>
+        </div>
+
+        <div id="quizContainer"></div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="submitBtn" onclick="checkQuiz()">Проверить результат</button>
+        </div>
+
+        <div id="resultContainer" class="quiz-result" style="display: none;">
+            <h3>Ваш результат</h3>
+            <div class="score" id="scoreDisplay">0 / 20</div>
+            <p id="resultText"></p>
+            <p style="margin-top: 15px; font-size: 0.85rem;">Правильные ответы с пояснениями показаны под каждым вопросом.</p>
+        </div>
+
+        <div class="plan" style="margin-top: 40px;">
+            <h2>Что дальше</h2>
+            <ol>
+                <li>Если набрали 18–20 — вы отлично усвоили материал. Переходите к практике на реальной базе.</li>
+                <li>Если 15–17 — вернитесь к модулям, где были ошибки, и перечитайте их.</li>
+                <li>Если меньше 15 — пройдите курс заново, выполняя все задания в 1С.</li>
+            </ol>
+        </div>
+
+        <footer class="footer">
+            <div><strong>КУРС ТМЦ</strong> · итоговый тест</div>
+            <div><a href="index.html">Вернуться в каталог</a></div>
+        </footer>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "Какой стандарт регулирует учёт запасов и с какого года он обязателен?",
+                options: ["ПБУ 5/01, с 2001 года", "ФСБУ 5/2019, с 2021 года", "ФСБУ 25/2018, с 2022 года", "НК РФ, с 2020 года"],
+                correct: 1,
+                explanation: "ФСБУ 5/2019 «Запасы» утверждён приказом Минфина от 15.11.2019 № 180н и обязателен с 2021 года. Он заменил ПБУ 5/01."
+            },
+            {
+                question: "Входит ли возмещаемый НДС в первоначальную стоимость материалов?",
+                options: ["Да, всегда", "Нет, возмещаемые налоги не включаются", "Только если поставщик не выделил НДС", "Зависит от учётной политики"],
+                correct: 1,
+                explanation: "Согласно п. 12 ФСБУ 5/2019, возмещаемые налоги (включая НДС) не включаются в фактическую себестоимость запасов."
+            },
+            {
+                question: "Какая проводка формируется при выдаче материалов в цех на выпуск продукции?",
+                options: ["Дт 10 — Кт 20", "Дт 20 — Кт 10", "Дт 43 — Кт 20", "Дт 94 — Кт 10"],
+                correct: 1,
+                explanation: "Выдача материалов в основное производство отражается проводкой Дт 20 «Основное производство» — Кт 10 «Материалы»."
+            },
+            {
+                question: "Как называется документ для выдачи материалов в производство в актуальных версиях 1С (начиная с 3.0.90)?",
+                options: ["Требование-накладная", "Расход материалов", "Отчёт производства за смену", "Перемещение товаров"],
+                correct: 1,
+                explanation: "Документ «Требование-накладная» был переименован в «Расход материалов» в версии 1С 3.0.90. Оба названия обозначают один и тот же документ."
+            },
+            {
+                question: "Каким документом оформляется включение транспортных расходов в стоимость материалов?",
+                options: ["Поступление товаров", "Поступление доп. расходов", "Расход материалов", "Корректировка поступления"],
+                correct: 1,
+                explanation: "Документ «Поступление доп. расходов» (раздел «Покупки») позволяет включить ТЗР в стоимость материалов на счёте 10."
+            },
+            {
+                question: "Какая проводка формируется при оприходовании готовой продукции из производства?",
+                options: ["Дт 20 — Кт 10", "Дт 43 — Кт 20", "Дт 10 — Кт 60", "Дт 90 — Кт 43"],
+                correct: 1,
+                explanation: "Выпуск готовой продукции отражается проводкой Дт 43 «Готовая продукция» — Кт 20 «Основное производство»."
+            },
+            {
+                question: "Что такое НЗП и на каком счёте оно отражается?",
+                options: ["Незавершённое производство, счёт 43", "Незавершённое производство, дебетовое сальдо счёта 20", "Недостача запасов, счёт 94", "Налоговые затраты периода, счёт 97"],
+                correct: 1,
+                explanation: "НЗП (незавершённое производство) — это затраты на продукцию, не прошедшую всех стадий обработки. Отражается как дебетовое сальдо счёта 20 после закрытия месяца."
+            },
+            {
+                question: "На каких счетах учитывается спецодежда: на складе и в эксплуатации?",
+                options: ["10.01 и 10.03", "10.10 и 10.11.1", "10.06 и 10.07", "43 и 20"],
+                correct: 1,
+                explanation: "Спецодежда на складе учитывается на счёте 10.10, при выдаче сотруднику переводится на счёт 10.11.1 «в эксплуатации»."
+            },
+            {
+                question: "На каком счёте учитывается давальческое сырьё у переработчика?",
+                options: ["Счёт 10.01", "Счёт 003 (забалансовый)", "Счёт 03", "Счёт 41"],
+                correct: 1,
+                explanation: "У переработчика давальческое сырьё учитывается на забалансовом счёте 003 «Материалы, принятые в переработку». Счёт 03 — это доходные вложения в материальные ценности."
+            },
+            {
+                question: "На каком счёте учитывается давальческое сырьё у давальца (заказчика)?",
+                options: ["Счёт 003", "Счёт 10.07", "Счёт 20", "Счёт 43"],
+                correct: 1,
+                explanation: "У давальца материалы, переданные в переработку на сторону, учитываются на счёте 10.07 «Материалы, переданные в переработку на сторону»."
+            },
+            {
+                question: "Что означает «лимит признания» в контексте ФСБУ 5/2019?",
+                options: ["Максимальная стоимость запасов на складе", "Лимит для отнесения актива к основным средствам, устанавливаемый организацией", "Минимальная партия закупки", "Срок хранения запасов"],
+                correct: 1,
+                explanation: "Сам ФСБУ 5/2019 не устанавливает лимита для запасов. Организация устанавливает лимит стоимости для отнесения активов к ОС (счёт 01). Активы дешевле лимита можно сразу списывать в расходы."
+            },
+            {
+                question: "Какой документ в 1С одновременно списывает материалы по спецификации и приходует готовую продукцию?",
+                options: ["Расход материалов", "Отчёт производства за смену", "Поступление товаров", "Инвентаризация"],
+                correct: 1,
+                explanation: "«Отчёт производства за смену» с флажком «Списать материалы» одновременно списывает материалы по спецификации и приходует готовую продукцию на склад."
+            },
+            {
+                question: "Какая проводка формируется при выявлении излишков материалов при инвентаризации?",
+                options: ["Дт 94 — Кт 10", "Дт 10 — Кт 91.01", "Дт 10 — Кт 60", "Дт 91.02 — Кт 10"],
+                correct: 1,
+                explanation: "Излишки, выявленные при инвентаризации, оприходуются проводкой Дт 10 «Материалы» — Кт 91.01 «Прочие доходы»."
+            },
+            {
+                question: "Какая проводка формируется при выявлении недостачи материалов?",
+                options: ["Дт 10 — Кт 94", "Дт 94 — Кт 10", "Дт 91.02 — Кт 10", "Дт 73 — Кт 10"],
+                correct: 1,
+                explanation: "Недостача сначала отражается проводкой Дт 94 «Недостачи и потери от порчи ценностей» — Кт 10 «Материалы». Затем в зависимости от решения руководителя списывается на виновное лицо (Дт 73) или на расходы."
+            },
+            {
+                question: "Включаются ли ТЗР в фактическую себестоимость запасов согласно ФСБУ 5/2019?",
+                options: ["Нет, это прочие расходы", "Да, включаются", "Только если это прописано в договоре", "Только для импортных материалов"],
+                correct: 1,
+                explanation: "Согласно п. 11 ФСБУ 5/2019, транспортно-заготовительные расходы (ТЗР) включаются в фактическую себестоимость запасов."
+            },
+            {
+                question: "Какой отчёт позволяет увидеть остатки и движение материалов в разрезе субсчетов счёта 10?",
+                options: ["Анализ счёта 20", "ОСВ по счёту 10", "Карточка счёта 43", "Ведомость по партиям"],
+                correct: 1,
+                explanation: "Оборотно-сальдовая ведомость (ОСВ) по счёту 10 показывает остатки на начало и конец периода, а также дебетовые и кредитовые обороты в разрезе субсчетов и аналитики."
+            },
+            {
+                question: "Какой метод оценки запасов при выбытии предполагает списание сначала более ранних партий?",
+                options: ["По средней себестоимости", "По себестоимости каждой единицы", "ФИФО", "ЛИФО"],
+                correct: 2,
+                explanation: "Метод ФИФО (First In, First Out) означает, что сначала списываются запасы, поступившие раньше. Метод ЛИФО в российском бухгалтерском учёте не применяется."
+            },
+            {
+                question: "Что нужно проверить перед закрытием месяца по участку ТМЦ?",
+                options: ["Только наличие всех документов", "Отсутствие отрицательных остатков и корректность проводок", "Только суммы по счёту 60", "Только отчёты для налоговой"],
+                correct: 1,
+                explanation: "Перед закрытием месяца нужно проверить отсутствие отрицательных остатков по счетам 10, 20, 43, корректность всех проводок и сверить данные бухгалтерского учёта с оперативным складским учётом."
+            },
+            {
+                question: "Какая проводка формируется при списании спецодежды со склада в эксплуатацию?",
+                options: ["Дт 20 — Кт 10.10", "Дт 10.11.1 — Кт 10.10", "Дт 10.10 — Кт 60", "Дт 94 — Кт 10.10"],
+                correct: 1,
+                explanation: "При выдаче спецодежды сотруднику её стоимость переводится со счёта 10.10 «на складе» на счёт 10.11.1 «в эксплуатации» проводкой Дт 10.11.1 — Кт 10.10."
+            },
+            {
+                question: "Можно ли списать недостачу материалов «на расходы» без документов, если нормы естественной убыли не установлены?",
+                options: ["Да, это обычная практика", "Нет, это нарушение: нужны нормы или обоснование", "Да, если сумма небольшая", "Зависит от решения кладовщика"],
+                correct: 1,
+                explanation: "Списание недостачи без установленных норм естественной убыли и без документов (объяснительных, решения руководителя) является нарушением. Недостача должна быть документально оформлена и отнесена на виновное лицо или на расходы только при наличии обоснования."
+            }
+        ];
+
+        let selectedAnswers = {};
+
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = quizData.map((q, index) => `
+                <div class="module">
+                    <div class="test-question">
+                        <p><strong>Вопрос ${index + 1}.</strong> ${q.question}</p>
+                        <div class="quiz-options" data-q="${index}">
+                            ${q.options.map((opt, optIndex) => `
+                                <label class="quiz-option" data-q="${index}" data-opt="${optIndex}">
+                                    <input type="radio" name="q${index}" value="${optIndex}" onchange="selectAnswer(${index}, ${optIndex})">
+                                    ${opt}
+                                </label>
+                            `).join('')}
+                        </div>
+                        <div class="quiz-feedback" id="feedback-${index}"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectAnswer(qIndex, optIndex) {
+            selectedAnswers[qIndex] = optIndex;
+            document.querySelectorAll(`.quiz-option[data-q="${qIndex}"]`).forEach(el => {
+                el.classList.remove('selected');
+            });
+            document.querySelector(`.quiz-option[data-q="${qIndex}"][data-opt="${optIndex}"]`).classList.add('selected');
+        }
+
+        function checkQuiz() {
+            if (Object.keys(selectedAnswers).length < quizData.length) {
+                alert('Пожалуйста, ответьте на все вопросы перед проверкой.');
+                return;
+            }
+
+            let correctCount = 0;
+
+            quizData.forEach((q, index) => {
+                const selected = selectedAnswers[index];
+                const isCorrect = selected === q.correct;
+                if (isCorrect) correctCount++;
+
+                const options = document.querySelectorAll(`.quiz-option[data-q="${index}"]`);
+                options.forEach((optEl, optIndex) => {
+                    optEl.classList.remove('selected', 'correct', 'incorrect');
+                    if (optIndex === q.correct) {
+                        optEl.classList.add('correct');
+                    } else if (optIndex === selected && !isCorrect) {
+                        optEl.classList.add('incorrect');
+                    }
+                });
+
+                const feedback = document.getElementById(`feedback-${index}`);
+                feedback.classList.add('show');
+                feedback.classList.add(isCorrect ? 'correct' : 'incorrect');
+                feedback.innerHTML = `<strong>${isCorrect ? '✅ Верно!' : '❌ Неверно.'}</strong> ${q.explanation}`;
+            });
+
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.style.display = 'block';
+            document.getElementById('scoreDisplay').textContent = `${correctCount} / ${quizData.length}`;
+
+            let resultText = '';
+            if (correctCount >= 18) {
+                resultText = 'Отлично! Вы отлично усвоили материал курса.';
+            } else if (correctCount >= 15) {
+                resultText = 'Хорошо! Рекомендуем повторить модули, где были допущены ошибки.';
+            } else if (correctCount >= 12) {
+                resultText = 'Удовлетворительно. Стоит вернуться к изучению курса и выполнить все задания в 1С.';
+            } else {
+                resultText = 'Стоит пройти курс заново, внимательно выполняя все практические задания.';
+            }
+            document.getElementById('resultText').textContent = resultText;
+
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').textContent = 'Результат показан';
+        }
+
+        renderQuiz();
+    </script>
+</body>
+</html>
