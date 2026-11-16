@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шпаргалка по проводкам: учёт ТМЦ</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        @media print {
+            .header, .footer, .no-print { display: none !important; }
+            body { padding: 0; background: #fff; }
+            .module { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+            .course-wrap { max-width: 100%; }
+            h1 { font-size: 1.8rem; }
+        }
+        .cheat-table { font-size: 0.85rem; }
+        .cheat-table th { font-size: 0.8rem; padding: 8px 10px; }
+        .cheat-table td { padding: 8px 10px; }
+        .law-link { display: inline-block; background: var(--color-surface); padding: 4px 10px; font-size: 0.8rem; border: 1px solid var(--color-border); margin: 2px; }
+        .law-link:hover { border-color: var(--color-text); }
+    </style>
+</head>
+<body>
+    <header class="header no-print">
+        <a href="index.html" class="wordmark">КУРС<span>ТМЦ</span><i>1С:БУХГАЛТЕРИЯ 8.3</i></a>
+        <div class="header-nav"><a href="index.html">← В КАТАЛОГ</a></div>
+    </header>
+
+    <div class="course-wrap">
+        <h1>Шпаргалка по проводкам</h1>
+        <div class="course-info no-print">
+            <p><strong>Для печати:</strong> нажмите Ctrl+P (или Cmd+P). Страница свёрстана так, чтобы уместиться на 1–2 листах А4.</p>
+        </div>
+
+        <div class="module">
+            <h2>Основные проводки по учёту ТМЦ</h2>
+            <table class="cheat-table">
+                <thead>
+                    <tr><th>№</th><th>Операция</th><th>Дебет</th><th>Кредит</th><th>Комментарий</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Поступление материалов от поставщика</td><td>10.01</td><td>60.01</td><td>На основании накладной поставщика</td></tr>
+                    <tr><td>2</td><td>Выделен входной НДС</td><td>19.03</td><td>60.01</td><td>Если поставщик — плательщик НДС</td></tr>
+                    <tr><td>3</td><td>НДС принят к вычету</td><td>68.02</td><td>19.03</td><td>После получения счёта-фактуры</td></tr>
+                    <tr><td>4</td><td>Доставка (ТЗР) включена в стоимость</td><td>10.01</td><td>60.01 / 76.05</td><td>Через «Поступление доп. расходов»</td></tr>
+                    <tr><td>5</td><td>Оплата поставщику</td><td>60.01</td><td>51</td><td>Банковская выписка</td></tr>
+                    <tr><td>6</td><td>Перемещение между складами</td><td>10.01</td><td>10.01</td><td>Документ «Перемещение товаров»</td></tr>
+                    <tr><td>7</td><td><strong>Выдача в цех на выпуск</strong></td><td><strong>20.01</strong></td><td><strong>10.01</strong></td><td>«Расход материалов»</td></tr>
+                    <tr><td>8</td><td>Выдача на общецеховые нужды</td><td>25</td><td>10.01</td><td>«Расход материалов»</td></tr>
+                    <tr><td>9</td><td>Выдача на управленческие нужды</td><td>26</td><td>10.01</td><td>«Расход материалов»</td></tr>
+                    <tr><td>10</td><td>Возврат из цеха на склад</td><td>10.01</td><td>20.01</td><td>Или документом «Перемещение»</td></tr>
+                    <tr><td>11</td><td><strong>Выпуск готовой продукции</strong></td><td><strong>43</strong></td><td><strong>20.01</strong></td><td>«Отчёт производства за смену»</td></tr>
+                    <tr><td>12</td><td>Оприходование полуфабрикатов</td><td>21 / 10.07</td><td>20.01</td><td>Если предусмотрено учётной политикой</td></tr>
+                    <tr><td>13</td><td>Излишки при инвентаризации</td><td>10.01</td><td>91.01</td><td>«Оприходование товаров»</td></tr>
+                    <tr><td>14</td><td>Недостача (до решения)</td><td>94</td><td>10.01</td><td>«Списание товаров»</td></tr>
+                    <tr><td>15</td><td>Недостача на виновное лицо</td><td>73.02</td><td>94</td><td>Если виновник установлен</td></tr>
+                    <tr><td>16</td><td>Недостача в пределах норм убыли</td><td>20 / 25 / 26 / 44</td><td>94</td><td>Если нормы установлены в политике</td></tr>
+                    <tr><td>17</td><td>Списание материалов на прочие расходы</td><td>91.02</td><td>10.01</td><td>Порча, моральный износ</td></tr>
+                    <tr><td>18</td><td><strong>Давальческое сырьё у переработчика</strong></td><td><strong>003</strong></td><td>—</td><td>Забалансовый, по цене договора</td></tr>
+                    <tr><td>19</td><td><strong>Давальческое сырьё у давальца</strong></td><td><strong>10.07</strong></td><td>10.01</td><td>Передача в переработку</td></tr>
+                    <tr><td>20</td><td>Спецодежда на складе</td><td>10.10</td><td>60.01</td><td>Поступление</td></tr>
+                    <tr><td>21</td><td>Спецодежда выдана сотруднику</td><td>10.11.1</td><td>10.10</td><td>Передача в эксплуатацию</td></tr>
+                    <tr><td>22</td><td>Погашение стоимости спецодежды</td><td>20 / 25 / 26</td><td>10.11.1</td><td>Регламентная операция</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="module">
+            <h2>Ключевые нормативные документы</h2>
+            <p>
+                <a href="https://minfin.gov.ru/ru/document?id_4=133539" class="law-link" target="_blank">ФСБУ 5/2019 «Запасы» (приказ Минфина № 180н)</a>
+                <a href="https://www.consultant.ru/document/cons_doc_LAW_29165/" class="law-link" target="_blank">План счетов (приказ № 94н)</a>
+                <a href="https://www.consultant.ru/document/cons_doc_LAW_107611/" class="law-link" target="_blank">ГК РФ, ст. 713 (давальческое сырьё)</a>
+            </p>
+        </div>
+
+        <footer class="footer no-print">
+            <div><strong>КУРС ТМЦ</strong> · шпаргалка</div>
+            <div><a href="index.html">В каталог</a></div>
+        </footer>
+    </div>
+</body>
+</html>
