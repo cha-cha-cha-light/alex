@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рабочие калькуляторы бухгалтера ТМЦ</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin: 30px 0;
+            border-bottom: 2px solid var(--color-text);
+            flex-wrap: wrap;
+        }
+        .tab {
+            background: transparent;
+            border: none;
+            padding: 14px 24px;
+            font-family: var(--font-text);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            color: var(--color-text-muted);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .tab:hover { color: var(--color-text); }
+        .tab.active {
+            color: var(--color-text);
+            border-bottom-color: var(--color-accent);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .calc-card {
+            background: var(--p-white);
+            border: 1px solid var(--color-border);
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-print);
+        }
+        .calc-card h3 {
+            margin-top: 0;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--color-accent);
+            margin-bottom: 20px;
+        }
+        .calc-formula {
+            background: var(--color-surface);
+            padding: 14px 20px;
+            margin: 15px 0;
+            font-size: 0.88rem;
+            color: var(--color-text-muted);
+            border-left: 3px solid var(--color-text-muted);
+        }
+        .calc-formula strong { color: var(--color-text); }
+        .calc-formula code {
+            background: var(--p-white);
+            padding: 2px 6px;
+            border: 1px solid var(--color-border);
+        }
+
+        .calc-row {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .calc-field {
+            flex: 1;
+            min-width: 140px;
+        }
+        .calc-field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            color: var(--color-text-muted);
+        }
+        .calc-field input, .calc-field select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 1rem;
+            font-family: 'DejaVu Sans Mono', monospace;
+            border: 1px solid var(--color-border-strong);
+            background: var(--p-white);
+            color: var(--color-text);
+        }
+        .calc-field input:focus, .calc-field select:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        table.calc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        table.calc-table th {
+            background: var(--color-text);
+            color: var(--p-paper);
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        table.calc-table td {
+            padding: 8px 10px;
+            border: 1px solid var(--color-border);
+            vertical-align: middle;
+        }
+        table.calc-table input {
+            width: 100%;
+            padding: 6px 8px;
+            font-size: 0.9rem;
+            border: 1px solid var(--color-border);
+            font-family: 'DejaVu Sans Mono', monospace;
+            background: var(--p-white);
+        }
+        table.calc-table input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+        table.calc-table input[type="number"] { text-align: right; }
+
+        .calc-btn {
+            background: var(--color-accent);
+            color: var(--color-text);
+            border: none;
+            padding: 12px 28px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 8px;
+        }
+        .calc-btn:hover { background: var(--color-accent-text); color: var(--p-white); }
+        .calc-btn.secondary {
+            background: transparent;
+            color: var(--color-text);
+            border: 2px solid var(--color-text);
+        }
+        .calc-btn.secondary:hover { background: var(--color-text); color: var(--p-paper); }
+        .calc-btn.small {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+        }
+        .calc-btn.danger {
+            background: transparent;
+            border: 1px solid #d32f2f;
+            color: #d32f2f;
+            padding: 4px 10px;
+        }
+        .calc-btn.danger:hover { background: #d32f2f; color: #fff; }
+
+        .result-area {
+            background: var(--p-paper);
+            border-left: 5px solid var(--color-accent);
+            padding: 20px 25px;
+            margin-top: 20px;
+            display: none;
+        }
+        .result-area.show { display: block; }
+        .result-area h4 {
+            margin-top: 0;
+            font-family: var(--font-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        .result-total {
+            font-family: 'DejaVu Sans Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-accent-text);
+            padding: 15px 0;
+            border-top: 2px solid var(--color-text);
+            margin-top: 15px;
+        }
+        .result-table th, .result-table td {
+            padding: 8px 10px;
+            text-align: right;
+        }
+        .result-table th:first-child, .result-table td:first-child {
+            text-align: left;
+        }
+        .result-table tr.total td {
+            font-weight: 700;
+            background: var(--p-paper);
+            border-top: 2px solid var(--color-text);
+        }
+        .law-note {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--color-border);
+        }
+        .law-note a { color: var(--color-accent-text); border-bottom: 1px dotted; }
+        .example-hint {
+            background: var(--color-surface);
+            padding: 12px 18px;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-bottom: 15px;
+            border-left: 3px solid var(--color-text-muted);
+        }
+        .example-hint strong { color: var(--color-text); }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="wordmark">КУРС<span>ТМЦ</span><i>1С:БУХГАЛТЕРИЯ 8.3</i></a>
+        <div class="header-nav"><a href="index.html">← В КАТАЛОГ</a></div>
+    </header>
+
+    <div class="course-wrap">
+
+        <h1>Рабочие калькуляторы<br>бухгалтера ТМЦ</h1>
+
+        <div class="course-info">
+            <p><strong>Зачем это:</strong> 1С считает автоматически, но не всегда понятно, <em>как именно</em> она это сделала. Эти калькуляторы помогают проверить расчёт, понять логику программы и подготовить данные для сверки.</p>
+            <p><strong>Как использовать:</strong> введите свои цифры или нажмите «Загрузить пример» — калькулятор посчитает и покажет формулы. Всё работает в браузере, без интернета.</p>
+            <p><strong>Основа расчётов:</strong> ФСБУ 5/2019 «Запасы» (приказ Минфина № 180н от 15.11.2019).</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="tzr" onclick="switchTab('tzr')">Распределение ТЗР</button>
+            <button class="tab" data-tab="avg" onclick="switchTab('avg')">Средняя себестоимость</button>
+            <button class="tab" data-tab="fifo" onclick="switchTab('fifo')">Списание по ФИФО</button>
+            <button class="tab" data-tab="overhead" onclick="switchTab('overhead')">Косвенные расходы</button>
+        </div>
+
+        <!-- ================= КАЛЬКУЛЯТОР ТЗР ================= -->
+        <div class="tab-content active" id="tab-tzr">
+
+            <div class="calc-card">
+                <h3>Распределение ТЗР по материалам</h3>
+
+                <div class="calc-formula">
+                    <strong>Формула:</strong> ТЗР на материал = <code>Сумма ТЗР × (Стоимость материала / Общая стоимость)</code><br>
+                    Или по количеству: <code>Сумма ТЗР × (Кол-во материала / Общее кол-во)</code>
+                </div>
+
+                <div class="example-hint">
+                    <strong>Типовая ситуация:</strong> поставщик привёз три партии материалов, транспортные расходы — 6 000 ₽. Нужно распределить их на каждый материал, чтобы правильно списать ТЗР вместе с материалами.
+                    <br><br>
+                    <button class="calc-btn small secondary" onclick="loadTzrExample()">Загрузить пример</button>
+                </div>
+
+                <div class="calc-row">
+                    <div class="calc-field">
+                        <label>Сумма ТЗР (руб.)</label>
+                        <input type="number" id="tzrTotal" value="0" step="0.01">
+                    </div>
+                    <div class="calc-field">
+                        <label>Метод распределения</label>
+                        <select id="tzrMethod">
+                            <option value="amount">По сумме (рекомендуется)</option>
+                            <option value="qty">По количеству</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table class="calc-table">
+                    <thead>
+                        <tr>
+                            <th>Наименование материала</th>
+                            <th>Сумма поступления, ₽</th>
+                            <th>Количество</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tzrRows"></tbody>
+                </table>
+
+                <button class="calc-btn small secondary" onclick="addTzrRow()">+ Добавить материал</button>
+
+                <div style="margin-top: 20px;">
+                    <button class="calc-btn" onclick="calcTzr()">Рассчитать ТЗР</button>
+                    <button class="calc-btn secondary" onclick="resetTzr()">Сбросить</button>
+                </div>
+
+                <div class="result-area" id="tzrResult"></div>
+
+                <div class="law-note">
+                    <strong>Основание:</strong> п. 11 ФСБУ 5/2019 «Запасы» — транспортно-заготовительные расходы включаются в фактическую себестоимость запасов. В 1С оформляется документом «Поступление доп. расходов».
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= КАЛЬКУЛЯТОР СРЕДНЕЙ С/С ================= -->
+        <div class="tab-content" id="tab-avg">
+
+            <div class="calc-card">
+                <h3>Средняя себестоимость при списании (проверка 1С)</h3>
+
+                <div class="calc-formula">
+                    <strong>Формула (п. 37 ФСБУ 5/2019):</strong> средняя цена = <code>Общая стоимость запасов / Общее количество</code><br>
+                    Сумма списания = <code>Средняя цена × Количество к списанию</code>
+                </div>
+
+                <div class="example-hint">
+                    <strong>Типовая ситуация:</strong> за месяц было несколько поступлений по разным ценам. Нужно проверить, по какой цене 1С списала материалы в производство (по средней за месяц).
+                    <br><br>
+                    <button class="calc-btn small secondary" onclick="loadAvgExample()">Загрузить пример</button>
+                </div>
+
+                <table class="calc-table">
+                    <thead>
+                        <tr>
+                            <th>Поступление (дата/партия)</th>
+                            <th>Количество</th>
+                            <th>Цена за ед., ₽</th>
+                            <th>Сумма, ₽</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="avgRows"></tbody>
+                </table>
+
+                <button class="calc-btn small secondary" onclick="addAvgRow()">+ Добавить партию</button>
+
+                <div class="calc-row" style="margin-top: 20px;">
+                    <div class="calc-field">
+                        <label>Количество к списанию</label>
+                        <input type="number" id="avgWriteOff" value="0">
+                    </div>
+                    <div class="calc-field" style="flex: 0 0 auto;">
+                        <button class="calc-btn" onclick="calcAvg()">Рассчитать</button>
+                    </div>
+                </div>
+
+                <div class="result-area" id="avgResult"></div>
+
+                <div class="law-note">
+                    <strong>Основание:</strong> п. 36–37 ФСБУ 5/2019 «Запасы». В 1С по умолчанию используется взвешенная оценка: пересчёт средней цены выполняется при закрытии месяца (регламентная операция «Расчёт себестоимости»).
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= КАЛЬКУЛЯТОР ФИФО ================= -->
+        <div class="tab-content" id="tab-fifo">
+
+            <div class="calc-card">
+                <h3>Списание материалов по методу ФИФО</h3>
+
+                <div class="calc-formula">
+                    <strong>Логика ФИФО:</strong> сначала списываются материалы из более ранних партий. Если в первой партии не хватает — берётся из второй и т.д.
+                </div>
+
+                <div class="example-hint">
+                    <strong>Типовая ситуация:</strong> нужно проверить, как 1С спишет материал, если выбрана оценка по ФИФО. Партии должны быть указаны в порядке поступления.
+                    <br><br>
+                    <button class="calc-btn small secondary" onclick="loadFifoExample()">Загрузить пример</button>
+                </div>
+
+                <table class="calc-table">
+                    <thead>
+                        <tr>
+                            <th>Партия (в порядке поступления)</th>
+                            <th>Количество</th>
+                            <th>Цена за ед., ₽</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="fifoRows"></tbody>
+                </table>
+
+                <button class="calc-btn small secondary" onclick="addFifoRow()">+ Добавить партию</button>
+
+                <div class="calc-row" style="margin-top: 20px;">
+                    <div class="calc-field">
+                        <label>Количество к списанию</label>
+                        <input type="number" id="fifoWriteOff" value="0">
+                    </div>
+                    <div class="calc-field" style="flex: 0 0 auto;">
+                        <button class="calc-btn" onclick="calcFifo()">Рассчитать</button>
+                    </div>
+                </div>
+
+                <div class="result-area" id="fifoResult"></div>
+
+                <div class="law-note">
+                    <strong>Основание:</strong> п. 36 ФСБУ 5/2019 «Запасы». Метод ФИФО может применяться, если это закреплено в учётной политике. В 1С настраивается: Главное → Учётная политика → Метод оценки МПЗ.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= РАСПРЕДЕЛЕНИЕ КОСВЕННЫХ ================= -->
+        <div class="tab-content" id="tab-overhead">
+
+            <div class="calc-card">
+                <h3>Распределение косвенных расходов (25, 26 → 20)</h3>
+
+                <div class="calc-formula">
+                    <strong>Формула:</strong> на продукт = <code>Сумма косвенных × (База продукта / Общая база)</code><br>
+                    База распределения задаётся в учётной политике: зарплата, материалы, объём выпуска.
+                </div>
+
+                <div class="example-hint">
+                    <strong>Типовая ситуация:</strong> в конце месяца нужно распределить общепроизводственные (25) и общехозяйственные (26) расходы между видами продукции пропорционально выбранной базе.
+                    <br><br>
+                    <button class="calc-btn small secondary" onclick="loadOverheadExample()">Загрузить пример</button>
+                </div>
+
+                <div class="calc-row">
+                    <div class="calc-field">
+                        <label>Общая сумма косвенных расходов, ₽</label>
+                        <input type="number" id="overheadTotal" value="0" step="0.01">
+                    </div>
+                    <div class="calc-field">
+                        <label>База распределения</label>
+                        <select id="overheadBase">
+                            <option value="salary">Основная зарплата производственных рабочих</option>
+                            <option value="materials">Материальные затраты</option>
+                            <option value="output">Объём выпуска (шт., т)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table class="calc-table">
+                    <thead>
+                        <tr>
+                            <th>Вид продукции</th>
+                            <th>Значение базы</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="overheadRows"></tbody>
+                </table>
+
+                <button class="calc-btn small secondary" onclick="addOverheadRow()">+ Добавить продукт</button>
+
+                <div style="margin-top: 20px;">
+                    <button class="calc-btn" onclick="calcOverhead()">Рассчитать</button>
+                </div>
+
+                <div class="result-area" id="overheadResult"></div>
+
+                <div class="law-note">
+                    <strong>Основание:</strong> способ распределения косвенных расходов закрепляется в учётной политике. В 1С настраивается: Главное → Учётная политика → Косвенные расходы. В налоговом учёте — ст. 318–319 НК РФ.
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="footer">
+            <div><strong>КУРС ТМЦ</strong> · рабочие калькуляторы</div>
+            <div><a href="index.html">Вернуться в каталог</a></div>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ====================
+        function switchTab(name) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${name}"]`).classList.add('active');
+            document.getElementById(`tab-${name}`).classList.add('active');
+        }
+
+        // ==================== КАЛЬКУЛЯТОР ТЗР ====================
+        let tzrRows = [{name: '', amount: 0, qty: 0}];
+
+        function renderTzrRows() {
+            document.getElementById('tzrRows').innerHTML = tzrRows.map((r, i) => `
+                <tr>
+                    <td><input value="${r.name}" placeholder="Название" onchange="tzrRows[${i}].name=this.value"></td>
+                    <td><input type="number" value="${r.amount}" step="0.01" onchange="tzrRows[${i}].amount=+this.value"></td>
+                    <td><input type="number" value="${r.qty}" onchange="tzrRows[${i}].qty=+this.value"></td>
+                    <td><button class="calc-btn danger" onclick="removeTzrRow(${i})">×</button></td>
+                </tr>
+            `).join('');
+        }
+        function addTzrRow() { tzrRows.push({name: '', amount: 0, qty: 0}); renderTzrRows(); }
+        function removeTzrRow(i) { tzrRows.splice(i, 1); renderTzrRows(); }
+        function resetTzr() {
+            tzrRows = [{name: '', amount: 0, qty: 0}];
+            document.getElementById('tzrTotal').value = 0;
+            document.getElementById('tzrResult').classList.remove('show');
+            renderTzrRows();
+        }
+        function loadTzrExample() {
+            document.getElementById('tzrTotal').value = 6000;
+            tzrRows = [
+                {name: 'Сталь листовая 2 мм', amount: 50000, qty: 100},
+                {name: 'Краска порошковая', amount: 16000, qty: 20},
+                {name: 'Болт М8', amount: 3000, qty: 200}
+            ];
+            document.getElementById('tzrMethod').value = 'amount';
+            renderTzrRows();
+        }
+
+        function calcTzr() {
+            const total = +document.getElementById('tzrTotal').value;
+            const method = document.getElementById('tzrMethod').value;
+
+            if (total <= 0) { alert('Введите сумму ТЗР.'); return; }
+
+            const baseValues = tzrRows.map(r => method === 'amount' ? r.amount : r.qty);
+            const baseSum = baseValues.reduce((a, b) => a + b, 0);
+
+            if (baseSum <= 0) { alert('Введите данные по материалам (сумму или количество).'); return; }
+
+            let resultHtml = '<h4>Результат распределения ТЗР</h4>';
+            resultHtml += '<table class="result-table calc-table"><thead><tr>';
+            resultHtml += '<th>Материал</th><th>Сумма поступления, ₽</th>';
+            resultHtml += '<th>Доля, %</th><th>ТЗР, ₽</th><th>Стоимость с ТЗР, ₽</th>';
+            resultHtml += '</tr></thead><tbody>';
+
+            let totalCostFinal = 0;
+            let totalBase = 0;
+
+            tzrRows.forEach((r, i) => {
+                const base = baseValues[i];
+                const share = base / baseSum;
+                const tzrShare = total * share;
+                const costFinal = r.amount + tzrShare;
+                totalCostFinal += costFinal;
+                totalBase += r.amount;
+
+                resultHtml += `<tr>
+                    <td>${r.name || 'Без названия'}</td>
+                    <td>${r.amount.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
+                    <td>${(share * 100).toFixed(2)}</td>
+                    <td><strong>${tzrShare.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</strong></td>
+                    <td>${costFinal.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
+                </tr>`;
+            });
+
+            resultHtml += `<tr class="total">
+                <td>Итого</td>
+                <td>${totalBase.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
+                <td>100.00</td>
+                <td>${total.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
+                <td>${totalCostFinal.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
+            </tr>`;
+            resultHtml += '</tbody></table>';
+
+            resultHtml += `<div class="result-total">Проверка: ${totalBase.toLocaleString('ru-RU')} + ${total.toLocaleString('ru-RU')} = ${totalCostFinal.toLocaleString('ru-RU', {minimumFractionDigits: 2})} ₽</div>`;
+
+            resultHtml += '<p style="margin-top: 15px; font-size: 0.85rem; color: var(--color-text-muted);">Сверьте эти цифры с проводками в 1С: сумма Дт 10.01 по каждому материалу должна увеличиться на рассчитанную сумму ТЗР.</p>';
+
+            const res = document.getElementById('tzrResult');
+            res.innerHTML = resultHtml;
+            res.classList.add('show');
+        }
+
+        // ==================== СРЕДНЯЯ СЕБЕСТОИМОСТЬ ====================
+        let avgRows = [{name: '', qty: 0, price: 0}];
+
+        function renderAvgRows() {
+            document.getElementById('avgRows').innerHTML = avgRows.map((r, i) => `
+                <tr>
+                    <td><input value="${r.name}" placeholder="Партия" onchange="avgRows[${i}].name=this.value"></td>
+                    <td><input type="number" value="${r.qty}" onchange="avgRows[${i}].qty=+this.value"></td>
+                    <td><input type="number" value="${r.price}" step="0.01" onchange="avgRows[${i}].price=+this.value"></td>
+                    <td>${(r.qty * r.price).toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
+                    <td><button class="calc-btn danger" onclick="removeAvgRow(${i})">×</button></td>
+                </tr>
+            `).join('');
+        }
+        function addAvgRow() { avgRows.push({name: '', qty: 0, price: 0}); renderAvgRows(); }
+        function removeAvgRow(i) { avgRows.splice(i, 1); renderAvgRows(); }
+        function loadAvgExample() {
+            avgRows = [
+                {name: '01.03 — партия 1', qty: 100, price: 500},
+                {name: '10.03 — партия 2', qty: 50, price: 550},
+                {name: '20.03 — партия 3', qty: 80, price: 520}
+            ];
+            document.getElementById('avgWriteOff').value = 180;
+            renderAvgRows();
+        }
+
+        function calcAvg() {
+            const writeOff = +document.getElementById('avgWriteOff').value;
+            const totalQty = avgRows.reduce((s, r) => s + r.qty, 0);
+            const totalSum = avgRows.reduce((s, r) => s + r.qty * r.price, 0);
+
+            if (totalQty <= 0) { alert('Введите данные по партиям.'); return; }
+            if (writeOff > totalQty) { alert('Количество к списанию превышает общее количество на складе.'); return; }
+
+            const avgPrice = totalSum / totalQty;
+            const writeOffSum = avgPrice * writeOff;
+            const remainQty = totalQty - writeOff;
+            const remainSum = totalSum - writeOffSum;
+
+            let html = '<h4>Результат расчёта</h4>';
+            html += `<div class="result-total">Средняя цена за единицу: ${avgPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})} ₽</div>`;
+
+            html += '<table class="result-table calc-table"><thead><tr>';
+            html += '<th>Показатель</th><th>Количество</th><th>Сумма, ₽</th>';
+            html += '</tr></thead><tbody>';
+            html += `<tr><td>Всего поступило</td><td>${totalQty.toLocaleString('ru-RU')}</td><td>${totalSum.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td></tr>`;
+            html += `<tr><td>Списано</td><td>${writeOff.toLocaleString('ru-RU')}</td><td><strong>${writeOffSum.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</strong></td></tr>`;
+            html += `<tr class="total"><td>Остаток</td><td>${remainQty.toLocaleString('ru-RU')}</td><td>${remainSum.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td></tr>`;
+            html += '</tbody></table>';
+
+            html += `<p style="margin-top: 15px; font-size: 0.88rem;"><strong>Что проверить в 1С:</strong> после закрытия месяца откройте ОСВ по счёту 10 в разрезе этой номенклатуры. Сумма кредитового оборота (списание) должна быть равна <strong>${writeOffSum.toLocaleString('ru-RU', {minimumFractionDigits: 2})} ₽</strong>. Если в 1С получилось иначе — проверьте партии и даты документов.</p>`;
+
+            const res = document.getElementById('avgResult');
+            res.innerHTML = html;
+            res.classList.add('show');
+        }
+
+        // ==================== ФИФО ====================
+        let fifoRows = [{name: '', qty: 0, price: 0}];
+
+        function renderFifoRows() {
+            document.getElementById('fifoRows').innerHTML = fifoRows.map((r, i) => `
+                <tr>
+                    <td><input value="${r.name}" placeholder="Партия" onchange="fifoRows[${i}].name=this.value"></td>
+                    <td><input type="number" value="${r.qty}" onchange="fifoRows[${i}].qty=+this.value"></td>
+                    <td><input type="number" value="${r.price}" step="0.01" onchange="fifoRows[${i}].price=+this.value"></td>
+                    <td><button class="calc-btn danger" onclick="removeFifoRow(${i})">×</button></td>
+                </tr>
+            `).join('');
+        }
+        function addFifoRow() { fifoRows.push({name: '', qty: 0, price: 0}); renderFifoRows(); }
+        function removeFifoRow(i) { fifoRows.splice(i, 1); renderFifoRows(); }
+        function loadFifoExample() {
+            fifoRows = [
+                {name: 'Партия 1 (01.03)', qty: 100, price: 500},
+                {name: 'Партия 2 (10.03)', qty: 50, price: 550},
+                {name: 'Партия 3 (20.03)', qty: 80, price: 520}
+            ];
+            document.getElementById('fifoWriteOff').value = 180;
+            renderFifoRows();
+        }
+
+        function calcFifo() {
+            const writeOff = +document.getElementById('fifoWriteOff').value;
+            const totalQty = fifoRows.reduce((s, r) => s + r.qty, 0);
+
+            if (totalQty <= 0) { alert('Введите данные по партиям.'); return; }
+            if (writeOff > totalQty) { alert('Количество к списанию превышает остаток.'); return; }
+
+            let remaining = writeOff;
+            let totalSum = 0;
+            const detail = [];
+
+            fifoRows.forEach(r => {
+                if (remaining <= 0) return;
+                const fromThis = Math.min(remaining, r.qty);
+                const sum = fromThis * r.price;
+                totalSum += sum;
+                detail.push({name: r.name, qty: fromThis, price: r.price, sum});
+                remaining -= fromThis;
+            });
+
+            let html = '<h4>Результат списания по ФИФО</h4>';
+            html += '<table class="result-table calc-table"><thead><tr>';
+            html += '<th>Из какой партии</th><th>Кол-во</th><th>Цена, ₽</th><th>Сумма, ₽</th>';
+            html += '</tr></thead><tbody>';
+
+            detail.forEach(d => {
+                html += `<tr>
+                    <td>${d.name || 'Без названия'}</td>
+                    <td>${d.qty}</td>
+                    <td>${d.price.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
+                    <td>${d.sum.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
+                </tr>`;
+            });
+
+            html += `<tr class="total"><td colspan="3">Итого списано</td><td>${totalSum.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td></tr>`;
+            html += '</tbody></table>';
+
+            html += `<p style="margin-top: 15px; font-size: 0.88rem;"><strong>Средняя цена списания:</strong> ${(totalSum / writeOff).toLocaleString('ru-RU', {minimumFractionDigits: 2})} ₽ за единицу</p>`;
+            html += `<p style="font-size: 0.85rem; color: var(--color-text-muted);">В 1С при методе ФИФО сумма списания = <strong>${totalSum.toLocaleString('ru-RU', {minimumFractionDigits: 2})} ₽</strong>. Сверьте с проводкой Дт 20 — Кт 10.</p>`;
+
+            const res = document.getElementById('fifoResult');
+            res.innerHTML = html;
+            res.classList.add('show');
+        }
+
+        // ==================== КОСВЕННЫЕ РАСХОДЫ ====================
+        let overheadRows = [{name: '', base: 0}];
+
+        function renderOverheadRows() {
+            document.getElementById('overheadRows').innerHTML = overheadRows.map((r, i) => `
+                <tr>
+                    <td><input value="${r.name}" placeholder="Продукция" onchange="overheadRows[${i}].name=this.value"></td>
+                    <td><input type="number" value="${r.base}" step="0.01" onchange="overheadRows[${i}].base=+this.value"></td>
+                    <td><button class="calc-btn danger" onclick="removeOverheadRow(${i})">×</button></td>
+                </tr>
+            `).join('');
+        }
+        function addOverheadRow() { overheadRows.push({name: '', base: 0}); renderOverheadRows(); }
+        function removeOverheadRow(i) { overheadRows.splice(i, 1); renderOverheadRows(); }
+        function loadOverheadExample() {
+            document.getElementById('overheadTotal').value = 120000;
+            document.getElementById('overheadBase').value = 'salary';
+            overheadRows = [
+                {name: 'Изделие А', base: 80000},
+                {name: 'Изделие Б', base: 40000}
+            ];
+            renderOverheadRows();
+        }
+
+        function calcOverhead() {
+            const total = +document.getElementById('overheadTotal').value;
+            const baseSum = overheadRows.reduce((s, r) => s + r.base, 0);
+
+            if (total <= 0) { alert('Введите сумму косвенных расходов.'); return; }
+            if (baseSum <= 0) { alert('Введите значения базы для продуктов.'); return; }
+
+            let html = '<h4>Результат распределения</h4>';
+            html += '<table class="result-table calc-table"><thead><tr>';
+            html += '<th>Продукция</th><th>База</th><th>Доля, %</th><th>Косвенные, ₽</th>';
+            html += '</tr></thead><tbody>';
+
+            overheadRows.forEach(r => {
+                const share = r.base / baseSum;
+                const amount = total * share;
+                html += `<tr>
+                    <td>${r.name || 'Без названия'}</td>
+                    <td>${r.base.toLocaleString('ru-RU')}</td>
+                    <td>${(share * 100).toFixed(2)}</td>
+                    <td><strong>${amount.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</strong></td>
+                </tr>`;
+            });
+
+            html += `<tr class="total"><td colspan="2">Итого</td><td>100.00</td><td>${total.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td></tr>`;
+            html += '</tbody></table>';
+
+            html += `<p style="margin-top: 15px; font-size: 0.88rem;"><strong>Проводки в 1С при закрытии месяца:</strong> Дт 20 (по видам продукции) — Кт 25, 26 на соответствующие суммы. Проверьте «Анализ счёта 20» в разрезе номенклатурных групп.</p>`;
+
+            const res = document.getElementById('overheadResult');
+            res.innerHTML = html;
+            res.classList.add('show');
+        }
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        renderTzrRows();
+        renderAvgRows();
+        renderFifoRows();
+        renderOverheadRows();
+    </script>
+</body>
+</html>
