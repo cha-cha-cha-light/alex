@@ -311,7 +311,7 @@
                 <h3>Средняя себестоимость при списании (проверка 1С)</h3>
 
                 <div class="calc-formula">
-                    <strong>Формула (п. 37 ФСБУ 5/2019):</strong> средняя цена = <code>Общая стоимость запасов / Общее количество</code><br>
+                    <strong>Формула (п. 39 ФСБУ 5/2019):</strong> средняя цена = <code>Общая стоимость запасов / Общее количество</code><br>
                     Сумма списания = <code>Средняя цена × Количество к списанию</code>
                 </div>
 
@@ -349,7 +349,7 @@
                 <div class="result-area" id="avgResult"></div>
 
                 <div class="law-note">
-                    <strong>Основание:</strong> п. 36–37 ФСБУ 5/2019 «Запасы». В 1С по умолчанию используется взвешенная оценка: пересчёт средней цены выполняется при закрытии месяца (регламентная операция «Расчёт себестоимости»).
+                    <strong>Основание:</strong> п. 36, 39 ФСБУ 5/2019 «Запасы». В 1С при способе оценки «по средней» документы в течение месяца списывают материалы по скользящей средней цене, а при закрытии месяца регламентная операция <strong>«Корректировка стоимости номенклатуры»</strong> (в составе обработки «Закрытие месяца») доводит стоимость списаний до взвешенной средней за месяц.
                 </div>
             </div>
 
@@ -463,12 +463,17 @@
         </div>
 
         <footer class="footer">
-            <div><strong>КУРС ТМЦ</strong> · рабочие калькуляторы</div>
+            <div><strong>КУРС ТМЦ</strong> · рабочие калькуляторы · расчёты сверены с ФСБУ 5/2019, 16.11.2026</div>
             <div><a href="index.html">Вернуться в каталог</a></div>
         </footer>
     </div>
 
     <script>
+        // ==================== СЛУЖЕБНОЕ ====================
+        function esc(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
         // ==================== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ====================
         function switchTab(name) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -483,7 +488,7 @@
         function renderTzrRows() {
             document.getElementById('tzrRows').innerHTML = tzrRows.map((r, i) => `
                 <tr>
-                    <td><input value="${r.name}" placeholder="Название" onchange="tzrRows[${i}].name=this.value"></td>
+                    <td><input value="${esc(r.name)}" placeholder="Название" onchange="tzrRows[${i}].name=this.value"></td>
                     <td><input type="number" value="${r.amount}" step="0.01" onchange="tzrRows[${i}].amount=+this.value"></td>
                     <td><input type="number" value="${r.qty}" onchange="tzrRows[${i}].qty=+this.value"></td>
                     <td><button class="calc-btn danger" onclick="removeTzrRow(${i})">×</button></td>
@@ -538,7 +543,7 @@
                 totalBase += r.amount;
 
                 resultHtml += `<tr>
-                    <td>${r.name || 'Без названия'}</td>
+                    <td>${esc(r.name) || 'Без названия'}</td>
                     <td>${r.amount.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
                     <td>${(share * 100).toFixed(2)}</td>
                     <td><strong>${tzrShare.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</strong></td>
@@ -570,9 +575,9 @@
         function renderAvgRows() {
             document.getElementById('avgRows').innerHTML = avgRows.map((r, i) => `
                 <tr>
-                    <td><input value="${r.name}" placeholder="Партия" onchange="avgRows[${i}].name=this.value"></td>
-                    <td><input type="number" value="${r.qty}" onchange="avgRows[${i}].qty=+this.value"></td>
-                    <td><input type="number" value="${r.price}" step="0.01" onchange="avgRows[${i}].price=+this.value"></td>
+                    <td><input value="${esc(r.name)}" placeholder="Партия" onchange="avgRows[${i}].name=this.value"></td>
+                    <td><input type="number" value="${r.qty}" onchange="avgRows[${i}].qty=+this.value;renderAvgRows()"></td>
+                    <td><input type="number" value="${r.price}" step="0.01" onchange="avgRows[${i}].price=+this.value;renderAvgRows()"></td>
                     <td>${(r.qty * r.price).toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
                     <td><button class="calc-btn danger" onclick="removeAvgRow(${i})">×</button></td>
                 </tr>
@@ -627,7 +632,7 @@
         function renderFifoRows() {
             document.getElementById('fifoRows').innerHTML = fifoRows.map((r, i) => `
                 <tr>
-                    <td><input value="${r.name}" placeholder="Партия" onchange="fifoRows[${i}].name=this.value"></td>
+                    <td><input value="${esc(r.name)}" placeholder="Партия" onchange="fifoRows[${i}].name=this.value"></td>
                     <td><input type="number" value="${r.qty}" onchange="fifoRows[${i}].qty=+this.value"></td>
                     <td><input type="number" value="${r.price}" step="0.01" onchange="fifoRows[${i}].price=+this.value"></td>
                     <td><button class="calc-btn danger" onclick="removeFifoRow(${i})">×</button></td>
@@ -673,7 +678,7 @@
 
             detail.forEach(d => {
                 html += `<tr>
-                    <td>${d.name || 'Без названия'}</td>
+                    <td>${esc(d.name) || 'Без названия'}</td>
                     <td>${d.qty}</td>
                     <td>${d.price.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
                     <td>${d.sum.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</td>
@@ -697,7 +702,7 @@
         function renderOverheadRows() {
             document.getElementById('overheadRows').innerHTML = overheadRows.map((r, i) => `
                 <tr>
-                    <td><input value="${r.name}" placeholder="Продукция" onchange="overheadRows[${i}].name=this.value"></td>
+                    <td><input value="${esc(r.name)}" placeholder="Продукция" onchange="overheadRows[${i}].name=this.value"></td>
                     <td><input type="number" value="${r.base}" step="0.01" onchange="overheadRows[${i}].base=+this.value"></td>
                     <td><button class="calc-btn danger" onclick="removeOverheadRow(${i})">×</button></td>
                 </tr>
@@ -731,7 +736,7 @@
                 const share = r.base / baseSum;
                 const amount = total * share;
                 html += `<tr>
-                    <td>${r.name || 'Без названия'}</td>
+                    <td>${esc(r.name) || 'Без названия'}</td>
                     <td>${r.base.toLocaleString('ru-RU')}</td>
                     <td>${(share * 100).toFixed(2)}</td>
                     <td><strong>${amount.toLocaleString('ru-RU', {minimumFractionDigits: 2})}</strong></td>
